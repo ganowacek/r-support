@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R &amp; RStudio Support Hub</title>
+<meta name="description" content="A friendly reference site covering the RStudio IDE, importing data, transforming data, strings, factors, and data visualization in R.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">R</div>
+      <span>R &amp; RStudio Support</span>
+      <button class="menu-toggle" aria-label="Toggle navigation">☰ Menu</button>
+    </div>
+    <nav>
+      <div class="group-title">Overview</div>
+      <ul>
+        <li><a href="index.html" class="active">Home</a></li>
+      </ul>
+      <div class="group-title">Getting Started</div>
+      <ul>
+        <li><a href="rstudio-ide.html">RStudio IDE</a></li>
+      </ul>
+      <div class="group-title">Import &amp; Tidy</div>
+      <ul>
+        <li><a href="data-import.html">Importing Data</a></li>
+        <li><a href="data-transformation.html">Transforming Data (dplyr)</a></li>
+      </ul>
+      <div class="group-title">Working with Data</div>
+      <ul>
+        <li><a href="strings.html">Strings (stringr)</a></li>
+        <li><a href="factors.html">Factors (forcats)</a></li>
+      </ul>
+      <div class="group-title">Visualize</div>
+      <ul>
+        <li><a href="data-visualization.html">Data Visualization (ggplot2)</a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      Content adapted from the official <a href="https://posit.co/resources/cheatsheets/" target="_blank" rel="noopener">Posit / RStudio cheatsheets</a>, CC BY-SA.
+    </div>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <div class="kicker">R &amp; RStudio Support</div>
+      <h1>Learn RStudio and R, one cheatsheet at a time</h1>
+      <p class="lead">
+        This site collects the essentials from Posit's official cheatsheets into a single,
+        browsable reference — from finding your way around the RStudio IDE to importing,
+        wrangling, and visualizing data with the tidyverse.
+      </p>
+    </div>
+
+    <div class="callout tip">
+      <strong>New to R?</strong> Start with <a href="rstudio-ide.html">RStudio IDE</a> to get
+      oriented, then move to <a href="data-import.html">Importing Data</a> and
+      <a href="data-transformation.html">Transforming Data</a> to start working with your own
+      data sets.
+    </div>
+
+    <h2>Topics</h2>
+    <div class="card-grid">
+      <a class="topic-card" href="rstudio-ide.html">
+        <div class="icon" style="background:#447099;">🖥️</div>
+        <h3>RStudio IDE</h3>
+        <p>Panes, source editor, projects, version control, debugging, and keyboard shortcuts.</p>
+      </a>
+      <a class="topic-card" href="data-import.html">
+        <div class="icon" style="background:#4c9c8b;">📥</div>
+        <h3>Importing Data</h3>
+        <p>Read delimited files, Excel workbooks, and Google Sheets with readr, readxl, and googlesheets4.</p>
+      </a>
+      <a class="topic-card" href="data-transformation.html">
+        <div class="icon" style="background:#e0975e;">🔧</div>
+        <h3>Transforming Data</h3>
+        <p>Filter, arrange, mutate, summarize, group, and join data frames with dplyr.</p>
+      </a>
+      <a class="topic-card" href="strings.html">
+        <div class="icon" style="background:#d17a97;">🔤</div>
+        <h3>Strings</h3>
+        <p>Detect, extract, replace, and format text with stringr, plus a regular expressions primer.</p>
+      </a>
+      <a class="topic-card" href="factors.html">
+        <div class="icon" style="background:#8877b3;">🏷️</div>
+        <h3>Factors</h3>
+        <p>Create, reorder, recode, and combine categorical variables with forcats.</p>
+      </a>
+      <a class="topic-card" href="data-visualization.html">
+        <div class="icon" style="background:#6cc3d5;">📊</div>
+        <h3>Data Visualization</h3>
+        <p>Build plots layer by layer — geoms, stats, scales, facets, and themes — with ggplot2.</p>
+      </a>
+    </div>
+
+    <h2>Why the tidyverse?</h2>
+    <p>
+      Every reference on this site centers on the <strong>tidyverse</strong>, a collection of R
+      packages designed to work together around a shared philosophy: data should be
+      <em>tidy</em> — each variable in its own column, each observation in its own row — and
+      functions should be predictable, pipeable, and human-readable.
+    </p>
+
+    <div class="chip-row">
+      <span class="chip">readr — import</span>
+      <span class="chip">dplyr — transform</span>
+      <span class="chip">stringr — text</span>
+      <span class="chip">forcats — factors</span>
+      <span class="chip">ggplot2 — visualize</span>
+      <span class="chip">RStudio — workbench</span>
+    </div>
+
+    <h2>A typical R workflow</h2>
+    <ol class="steps">
+      <li><strong>Set up your project.</strong> Open RStudio, create a Project (<code>File &gt; New Project</code>), and organize your scripts, data, and outputs. See <a href="rstudio-ide.html">RStudio IDE</a>.</li>
+      <li><strong>Import your data.</strong> Read CSVs, Excel files, or Google Sheets into tibbles with <code>read_csv()</code>, <code>read_excel()</code>, or <code>read_sheet()</code>. See <a href="data-import.html">Importing Data</a>.</li>
+      <li><strong>Clean and reshape it.</strong> Filter rows, select columns, create new variables, and summarize groups with dplyr verbs. See <a href="data-transformation.html">Transforming Data</a>.</li>
+      <li><strong>Wrangle text and categories.</strong> Clean up messy text with stringr and tame categorical variables with forcats. See <a href="strings.html">Strings</a> and <a href="factors.html">Factors</a>.</li>
+      <li><strong>Visualize and share.</strong> Build layered plots with ggplot2, then knit results into a report with R Markdown. See <a href="data-visualization.html">Data Visualization</a>.</li>
+    </ol>
+
+    <footer class="page-footer">
+      Function references and diagrams are adapted from the official Posit cheatsheets
+      (RStudio IDE, Data Import, Data Transformation, Strings, Factors, Data Visualization),
+      © Posit Software, PBC, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.
+      Learn more and download the originals at
+      <a href="https://posit.co/resources/cheatsheets/" target="_blank" rel="noopener">posit.co/resources/cheatsheets</a>.
+    </footer>
+  </main>
+</div>
+<script src="assets/nav.js"></script>
+</body>
+</html>

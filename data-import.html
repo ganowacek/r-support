@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Importing Data | R &amp; RStudio Support Hub</title>
+<meta name="description" content="Import delimited files, Excel workbooks, and Google Sheets into R with readr, readxl, and googlesheets4.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">R</div>
+      <span>R &amp; RStudio Support</span>
+      <button class="menu-toggle" aria-label="Toggle navigation">☰ Menu</button>
+    </div>
+    <nav>
+      <div class="group-title">Overview</div>
+      <ul><li><a href="index.html">Home</a></li></ul>
+      <div class="group-title">Getting Started</div>
+      <ul><li><a href="rstudio-ide.html">RStudio IDE</a></li></ul>
+      <div class="group-title">Import &amp; Tidy</div>
+      <ul>
+        <li><a href="data-import.html" class="active">Importing Data</a></li>
+        <li><a href="data-transformation.html">Transforming Data (dplyr)</a></li>
+      </ul>
+      <div class="group-title">Working with Data</div>
+      <ul>
+        <li><a href="strings.html">Strings (stringr)</a></li>
+        <li><a href="factors.html">Factors (forcats)</a></li>
+      </ul>
+      <div class="group-title">Visualize</div>
+      <ul><li><a href="data-visualization.html">Data Visualization (ggplot2)</a></li></ul>
+    </nav>
+    <div class="sidebar-footer">
+      Content adapted from the official <a href="https://posit.co/resources/cheatsheets/" target="_blank" rel="noopener">Posit / RStudio cheatsheets</a>, CC BY-SA.
+    </div>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <div class="kicker">Import &amp; Tidy</div>
+      <h1>Importing Data</h1>
+      <p class="lead">
+        One of the first steps in any project is getting outside data into R. The tidyverse
+        provides <strong>readr</strong> for delimited text files, <strong>readxl</strong> for
+        Excel workbooks, and <strong>googlesheets4</strong> for Google Sheets.
+      </p>
+      <span class="source-note">📄 Based on the Data Import cheatsheet · readr 2.2.0 · readxl 1.5.0 · googlesheets4 1.1.2</span>
+    </div>
+
+    <h2>Reading tabular data with readr</h2>
+    <pre><code>read_*(file, col_names = TRUE, col_types = NULL, col_select = NULL, id = NULL,
+       locale, n_max = Inf, skip = 0, na = c("", "NA"),
+       guess_max = min(1000, n_max), show_col_types = TRUE)</code></pre>
+
+    <div class="func-grid">
+      <div class="func-card">
+        <code class="fn">read_csv("file.csv")</code>
+        <p>Read a comma-delimited file with period decimal marks.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_csv2("file2.csv")</code>
+        <p>Read semicolon-delimited files with comma decimal marks (common in European locales).</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_tsv("file.tsv")</code>
+        <p>Read a tab-delimited file. Also <code>read_table()</code> for whitespace-separated files.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_delim("file.txt", delim = "|")</code>
+        <p>Read files with any delimiter. If none is specified, readr guesses it automatically.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_fwf("file.tsv", fwf_widths(c(2, 2, NA)))</code>
+        <p>Read a fixed-width file by specifying each column's width.</p>
+      </div>
+    </div>
+
+    <h3>Useful read arguments</h3>
+    <table>
+      <tr><th>Goal</th><th>Code</th></tr>
+      <tr><td>No header row</td><td><code>read_csv("file.csv", col_names = FALSE)</code></td></tr>
+      <tr><td>Provide your own header</td><td><code>read_csv("file.csv", col_names = c("x", "y", "z"))</code></td></tr>
+      <tr><td>Read multiple files into one table</td><td><code>read_csv(c("f1.csv","f2.csv","f3.csv"), id = "origin_file")</code></td></tr>
+      <tr><td>Skip lines</td><td><code>read_csv("file.csv", skip = 1)</code></td></tr>
+      <tr><td>Read only a subset of lines</td><td><code>read_csv("file.csv", n_max = 1)</code></td></tr>
+      <tr><td>Treat a value as missing</td><td><code>read_csv("file.csv", na = c("1"))</code></td></tr>
+      <tr><td>Specify decimal marks</td><td><code>read_delim("file2.csv", locale = locale(decimal_mark = ","))</code></td></tr>
+      <tr><td>Hide the column-spec message</td><td><code>read_*(file, show_col_types = FALSE)</code></td></tr>
+      <tr><td>Select columns to import</td><td><code>read_*(file, col_select = c(age, earn))</code></td></tr>
+      <tr><td>Guess column types from more rows</td><td><code>read_*(file, guess_max = Inf)</code> &mdash; by default readr looks at the first 1000 rows.</td></tr>
+    </table>
+
+    <h2>Column specification</h2>
+    <p>
+      Column specifications define what data type each column will be imported as. By default,
+      readr generates and prints a spec summary when a file is read; inspect it any time with
+      <code>spec(x)</code>.
+    </p>
+    <table>
+      <tr><th>Function</th><th>Abbreviation</th></tr>
+      <tr><td><code>col_logical()</code></td><td><code>"l"</code></td></tr>
+      <tr><td><code>col_integer()</code></td><td><code>"i"</code></td></tr>
+      <tr><td><code>col_double()</code></td><td><code>"d"</code></td></tr>
+      <tr><td><code>col_number()</code></td><td><code>"n"</code></td></tr>
+      <tr><td><code>col_character()</code></td><td><code>"c"</code></td></tr>
+      <tr><td><code>col_factor(levels, ordered = FALSE)</code></td><td><code>"f"</code></td></tr>
+      <tr><td><code>col_datetime(format = "")</code></td><td><code>"T"</code></td></tr>
+      <tr><td><code>col_date(format = "")</code></td><td><code>"D"</code></td></tr>
+      <tr><td><code>col_time(format = "")</code></td><td><code>"t"</code></td></tr>
+      <tr><td><code>col_skip()</code></td><td><code>"-"</code> / <code>"_"</code></td></tr>
+      <tr><td><code>col_guess()</code></td><td><code>"?"</code></td></tr>
+    </table>
+    <pre><code># Set a default type for all columns
+read_csv(file, col_type = list(.default = col_double()))
+
+# Mix column type functions and string abbreviations
+read_csv(file, col_type = list(x = col_double(), y = "l", z = "_"))
+
+# Or a single compact string of abbreviations
+read_csv(file, col_type = "_?ilc")</code></pre>
+
+    <h2>Saving data with readr</h2>
+    <div class="func-grid">
+      <div class="func-card"><code class="fn">write_csv(x, file)</code><p>Write a comma-delimited file.</p></div>
+      <div class="func-card"><code class="fn">write_csv2(x, file)</code><p>Write a semicolon-delimited file.</p></div>
+      <div class="func-card"><code class="fn">write_tsv(x, file)</code><p>Write a tab-delimited file.</p></div>
+      <div class="func-card"><code class="fn">write_delim(x, file, delim = " ")</code><p>Write with any delimiter you choose.</p></div>
+    </div>
+
+    <h2>Other data sources</h2>
+    <div class="chip-row">
+      <span class="chip">haven — SPSS / Stata / SAS</span>
+      <span class="chip">DBI — databases</span>
+      <span class="chip">jsonlite — JSON</span>
+      <span class="chip">xml2 — XML</span>
+      <span class="chip">httr — web APIs</span>
+      <span class="chip">rvest — HTML / web scraping</span>
+      <span class="chip">readr::read_lines() — raw text</span>
+    </div>
+
+    <h2>Importing spreadsheets</h2>
+
+    <h3>Excel files with readxl</h3>
+    <div class="func-grid">
+      <div class="func-card">
+        <code class="fn">read_excel("excel_file.xlsx")</code>
+        <p>Read a <code>.xls</code> or <code>.xlsx</code> file based on its extension. Also <code>read_xls()</code> and <code>read_xlsx()</code> to force a format.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_excel(path, sheet = 1)</code>
+        <p>Choose a sheet by position or name: <code>read_excel(path, sheet = "s1")</code>.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">excel_sheets(path)</code>
+        <p>Get a vector of sheet names — useful before reading multiple sheets in a loop.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">read_excel(path, range = "Sheet1!B1:D2")</code>
+        <p>Read a subset of cells. Also see <code>cell_limits()</code>, <code>cell_rows()</code>, <code>cell_cols()</code>, and <code>anchored()</code>.</p>
+      </div>
+    </div>
+    <p>To read every sheet in a workbook into one combined data frame:</p>
+    <pre><code>path <- "your_file_path.xlsx"
+path |>
+  excel_sheets() |>
+  set_names() |>
+  map(read_excel, path = path) |>
+  list_rbind()</code></pre>
+    <p>Column types: set every column at once (<code>col_types = "text"</code>) or individually (<code>col_types = c("text", "guess", "guess", "numeric")</code>). Guess more rows with <code>guess_max = Inf</code>. For writing Excel files, see <strong>openxlsx</strong> or <strong>writexl</strong>; for non-tabular Excel content, see <strong>tidyxl</strong>.</p>
+
+    <h3>Google Sheets with googlesheets4</h3>
+    <div class="func-grid">
+      <div class="func-card">
+        <code class="fn">read_sheet(ss, sheet = NULL, range = NULL)</code>
+        <p>Read a sheet from a URL, a Sheet ID, or a <code>dribble</code> from googledrive. Same as <code>range_read()</code>.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">gs4_get(ss)</code> / <code class="fn">sheet_properties(ss)</code>
+        <p>Get spreadsheet metadata or a tibble of properties for each worksheet. Also <code>sheet_names()</code> and <code>gs4_find(...)</code>.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">write_sheet(data, ss, sheet)</code>
+        <p>Write a data frame into a new or existing sheet.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">gs4_create(name, ..., sheets = NULL)</code>
+        <p>Create a brand-new Sheet from a vector of names, a data frame, or a named list of data frames.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">sheet_append(ss, data, sheet = 1)</code>
+        <p>Add rows to the end of an existing worksheet.</p>
+      </div>
+    </div>
+    <p>Sheets URLs follow the pattern <code>https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit#gid=SHEET_ID</code>. For whole-file operations (renaming, sharing, moving between folders), use the companion package <strong>googledrive</strong>.</p>
+
+    <div class="callout">
+      Both readxl and googlesheets4 support the same <code>col_types</code> abbreviations as readr (<code>"l"</code>, <code>"i"</code>, <code>"d"</code>, <code>"n"</code>, <code>"c"</code>, <code>"D"</code>, <code>"T"</code>, <code>"?"</code>, <code>"_"</code>), plus <code>"L"</code> for list-columns when a column mixes multiple data types.
+    </div>
+
+    <div class="page-nav">
+      <a href="rstudio-ide.html"><span class="dir">← Back</span>RStudio IDE</a>
+      <a href="data-transformation.html" style="text-align:right;"><span class="dir">Next</span>Transforming Data →</a>
+    </div>
+  </main>
+</div>
+<script src="assets/nav.js"></script>
+</body>
+</html>

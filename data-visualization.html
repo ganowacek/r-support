@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Visualization (ggplot2) | R &amp; RStudio Support Hub</title>
+<meta name="description" content="Build layered plots in R with ggplot2 — geoms, stats, scales, coordinate systems, faceting, and themes.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">R</div>
+      <span>R &amp; RStudio Support</span>
+      <button class="menu-toggle" aria-label="Toggle navigation">☰ Menu</button>
+    </div>
+    <nav>
+      <div class="group-title">Overview</div>
+      <ul><li><a href="index.html">Home</a></li></ul>
+      <div class="group-title">Getting Started</div>
+      <ul><li><a href="rstudio-ide.html">RStudio IDE</a></li></ul>
+      <div class="group-title">Import &amp; Tidy</div>
+      <ul>
+        <li><a href="data-import.html">Importing Data</a></li>
+        <li><a href="data-transformation.html">Transforming Data (dplyr)</a></li>
+      </ul>
+      <div class="group-title">Working with Data</div>
+      <ul>
+        <li><a href="strings.html">Strings (stringr)</a></li>
+        <li><a href="factors.html">Factors (forcats)</a></li>
+      </ul>
+      <div class="group-title">Visualize</div>
+      <ul><li><a href="data-visualization.html" class="active">Data Visualization (ggplot2)</a></li></ul>
+    </nav>
+    <div class="sidebar-footer">
+      Content adapted from the official <a href="https://posit.co/resources/cheatsheets/" target="_blank" rel="noopener">Posit / RStudio cheatsheets</a>, CC BY-SA.
+    </div>
+  </aside>
+
+  <main>
+    <div class="page-header">
+      <div class="kicker">Visualize</div>
+      <h1>Data Visualization with ggplot2</h1>
+      <p class="lead">
+        ggplot2 is based on the <strong>grammar of graphics</strong> — the idea that you can
+        build every graph from the same components: a <strong>data</strong> set, a
+        <strong>coordinate system</strong>, and <strong>geoms</strong>, visual marks that
+        represent data points.
+      </p>
+      <span class="source-note">📄 Based on the Data Visualization cheatsheet · ggplot2 4.0.3</span>
+    </div>
+
+    <h2>The template</h2>
+    <p>Every ggplot2 chart follows the same basic recipe. Only <code>data</code>, the geom function, and its <code>mapping</code> are required — everything else falls back to sensible defaults.</p>
+    <pre><code>ggplot(data = &lt;DATA&gt;) +
+  &lt;GEOM_FUNCTION&gt;(
+    mapping = aes(&lt;MAPPINGS&gt;),
+    stat = &lt;STAT&gt;,
+    position = &lt;POSITION&gt;
+  ) +
+  &lt;COORDINATE_FUNCTION&gt; +
+  &lt;FACET_FUNCTION&gt; +
+  &lt;SCALE_FUNCTION&gt; +
+  &lt;THEME_FUNCTION&gt;</code></pre>
+    <div class="func-grid">
+      <div class="func-card"><code class="fn">ggplot(data, aes(x, y))</code><p>Begin a plot that you finish by adding layers (geoms) with <code>+</code>.</p></div>
+      <div class="func-card"><code class="fn">last_plot()</code><p>Returns the last plot that was displayed.</p></div>
+      <div class="func-card"><code class="fn">ggsave("plot.png", width = 5, height = 5)</code><p>Saves the last plot as a 5"×5" file. File type is inferred from the extension.</p></div>
+    </div>
+
+    <h3>Common aesthetic (aes) values</h3>
+    <table>
+      <tr><th>Aesthetic</th><th>Values</th></tr>
+      <tr><td><code>color</code> / <code>fill</code></td><td>a string, e.g. <code>"red"</code>, <code>"#RRGGBB"</code></td></tr>
+      <tr><td><code>linetype</code></td><td>integer or name: <code>0</code>="blank", <code>1</code>="solid", <code>2</code>="dashed", <code>3</code>="dotted", <code>4</code>="dotdash", <code>5</code>="longdash", <code>6</code>="twodash"</td></tr>
+      <tr><td><code>size</code></td><td>integer, in mm (point/text size)</td></tr>
+      <tr><td><code>linewidth</code></td><td>integer, in mm (line width)</td></tr>
+      <tr><td><code>shape</code></td><td>integer 0–25, a shape name, or a single character, e.g. <code>"a"</code></td></tr>
+    </table>
+
+    <h2>Geoms</h2>
+    <p>A geom function represents your data as a visual layer. Its aesthetic arguments map variables to visual properties like position, size, and color.</p>
+
+    <h3>One variable</h3>
+    <table>
+      <tr><th>Continuous</th><th>Discrete</th></tr>
+      <tr>
+        <td>
+          <code>geom_area(stat = "bin")</code><br>
+          <code>geom_density(kernel = "gaussian")</code><br>
+          <code>geom_dotplot()</code><br>
+          <code>geom_freqpoly()</code><br>
+          <code>geom_histogram(binwidth = 5)</code><br>
+          <code>geom_qq(aes(sample = x))</code>
+        </td>
+        <td><code>geom_bar()</code></td>
+      </tr>
+    </table>
+
+    <h3>Two variables</h3>
+    <table>
+      <tr><th>Both continuous</th><th>One discrete, one continuous</th><th>Both discrete</th></tr>
+      <tr>
+        <td>
+          <code>geom_label()</code>, <code>geom_point()</code>, <code>geom_quantile()</code>,
+          <code>geom_rug()</code>, <code>geom_smooth(method = lm)</code>, <code>geom_text()</code>
+        </td>
+        <td>
+          <code>geom_col()</code>, <code>geom_boxplot()</code>, <code>geom_dotplot()</code>,
+          <code>geom_violin()</code>
+        </td>
+        <td><code>geom_count()</code>, <code>geom_jitter()</code></td>
+      </tr>
+    </table>
+
+    <h3>Continuous bivariate distribution &amp; continuous function</h3>
+    <div class="chip-row">
+      <span class="chip">geom_bin2d(binwidth = c(0.25,500))</span>
+      <span class="chip">geom_density_2d()</span>
+      <span class="chip">geom_hex()</span>
+      <span class="chip">geom_area()</span>
+      <span class="chip">geom_line()</span>
+      <span class="chip">geom_step(direction = "hv")</span>
+    </div>
+
+    <h3>Visualizing error &amp; maps</h3>
+    <div class="chip-row">
+      <span class="chip">geom_crossbar()</span>
+      <span class="chip">geom_errorbar() / geom_errorbarh()</span>
+      <span class="chip">geom_linerange()</span>
+      <span class="chip">geom_pointrange()</span>
+      <span class="chip">geom_sf(aes(fill = ...))</span>
+    </div>
+    <p>For maps, read spatial data with <strong>sf</strong> (e.g. <code>sf::st_read(...)</code>) and draw it with <code>geom_sf()</code>.</p>
+
+    <h3>Three variables</h3>
+    <div class="chip-row">
+      <span class="chip">geom_contour(aes(z = z))</span>
+      <span class="chip">geom_contour_filled(aes(fill = z))</span>
+      <span class="chip">geom_raster(aes(fill = z))</span>
+      <span class="chip">geom_tile(aes(fill = z))</span>
+    </div>
+
+    <h3>Graphical primitives &amp; line segments</h3>
+    <div class="chip-row">
+      <span class="chip">geom_blank()</span>
+      <span class="chip">geom_curve()</span>
+      <span class="chip">geom_path()</span>
+      <span class="chip">geom_polygon()</span>
+      <span class="chip">geom_rect()</span>
+      <span class="chip">geom_ribbon()</span>
+      <span class="chip">geom_abline()</span>
+      <span class="chip">geom_hline()</span>
+      <span class="chip">geom_vline()</span>
+      <span class="chip">geom_segment()</span>
+      <span class="chip">geom_spoke()</span>
+    </div>
+
+    <h2>Stats</h2>
+    <p>
+      A <strong>stat</strong> is an alternative way to build a layer: it builds new variables to
+      plot (e.g. count, proportion) before a geom draws them. Every geom has a default stat, and
+      every stat has a default geom — you can override either one.
+    </p>
+    <pre><code># Equivalent ways to draw a bar chart of counts
+ggplot(df, aes(x)) + geom_bar()
+ggplot(df, aes(x)) + geom_bar(stat = "count")
+ggplot(df, aes(x)) + stat_count(geom = "bar")</code></pre>
+    <div class="chip-row">
+      <span class="chip">stat_bin()</span>
+      <span class="chip">stat_count()</span>
+      <span class="chip">stat_density()</span>
+      <span class="chip">stat_bin_2d()</span>
+      <span class="chip">stat_bin_hex()</span>
+      <span class="chip">stat_contour()</span>
+      <span class="chip">stat_summary()</span>
+      <span class="chip">stat_summary_2d()</span>
+      <span class="chip">stat_ecdf()</span>
+      <span class="chip">stat_quantile()</span>
+      <span class="chip">stat_smooth()</span>
+      <span class="chip">stat_ellipse()</span>
+      <span class="chip">stat_function()</span>
+      <span class="chip">stat_qq()</span>
+      <span class="chip">stat_unique()</span>
+    </div>
+
+    <h2>Scales</h2>
+    <p>
+      Scales map data values to the visual values of an aesthetic. Override a default with
+      <code>scale_&lt;aesthetic&gt;_&lt;type&gt;()</code>, e.g. <code>scale_fill_manual()</code>.
+    </p>
+    <pre><code>n <- d + geom_bar(aes(fill = fl))
+n + scale_fill_manual(
+  values = c("skyblue", "royalblue", "blue", "navy"),
+  limits = c("d", "e", "p", "r"),
+  breaks = c("d", "e", "p", "r"),
+  name = "fuel", labels = c("D", "E", "P", "R")
+)</code></pre>
+    <table>
+      <tr><th>Purpose</th><th>Functions</th></tr>
+      <tr><td>General purpose</td><td><code>scale_*_continuous()</code>, <code>scale_*_discrete()</code>, <code>scale_*_binned()</code>, <code>scale_*_identity()</code>, <code>scale_*_manual(values = c())</code>, <code>scale_*_date()</code>, <code>scale_*_datetime()</code></td></tr>
+      <tr><td>X &amp; Y location</td><td><code>scale_x_log10()</code>, <code>scale_x_reverse()</code>, <code>scale_x_sqrt()</code> (and <code>y</code> equivalents)</td></tr>
+      <tr><td>Color/fill — discrete</td><td><code>scale_fill_brewer(palette = "Blues")</code>, <code>scale_fill_grey()</code></td></tr>
+      <tr><td>Color/fill — continuous</td><td><code>scale_fill_distiller(palette = "Blues")</code>, <code>scale_fill_gradient(low, high)</code>, <code>scale_fill_gradient2(low, mid, high)</code>, <code>scale_fill_gradientn(colors = ...)</code></td></tr>
+      <tr><td>Shape &amp; size</td><td><code>scale_shape()</code>, <code>scale_shape_manual(values = c())</code>, <code>scale_size()</code>, <code>scale_radius(range = c())</code>, <code>scale_size_area(max_size = ...)</code></td></tr>
+    </table>
+
+    <h2>Coordinate systems</h2>
+    <div class="func-grid">
+      <div class="func-card"><code class="fn">coord_cartesian(xlim, ylim)</code><p>The default cartesian coordinate system, with optional axis limits.</p></div>
+      <div class="func-card"><code class="fn">coord_fixed(ratio = 1/2)</code><p>Cartesian coordinates with a fixed aspect ratio between x and y units.</p></div>
+      <div class="func-card"><code class="fn">coord_flip()</code><p>Flip cartesian coordinates by switching the x and y aesthetic mappings.</p></div>
+      <div class="func-card"><code class="fn">coord_polar(theta = "x")</code><p>Polar coordinates.</p></div>
+      <div class="func-card"><code class="fn">coord_trans(y = "sqrt")</code><p>Transformed cartesian coordinates.</p></div>
+      <div class="func-card"><code class="fn">coord_sf()</code><p>Ensures all layers share a common Coordinate Reference System — use with <code>geom_sf()</code>.</p></div>
+    </div>
+
+    <h2>Position adjustments</h2>
+    <p>Position adjustments determine how geoms that would otherwise overlap get arranged.</p>
+    <div class="func-grid">
+      <div class="func-card"><code class="fn">position = "dodge"</code><p>Arrange elements side by side.</p></div>
+      <div class="func-card"><code class="fn">position = "fill"</code><p>Stack elements and normalize height to 100%.</p></div>
+      <div class="func-card"><code class="fn">position = "jitter"</code><p>Add random noise to x/y position to reduce overplotting.</p></div>
+      <div class="func-card"><code class="fn">position = "nudge"</code><p>Nudge labels away from their points.</p></div>
+      <div class="func-card"><code class="fn">position = "stack"</code><p>Stack elements on top of one another.</p></div>
+    </div>
+    <p>Recast a position as a function to pass extra arguments, e.g. <code>s + geom_bar(position = position_dodge(width = 1))</code>.</p>
+
+    <h2>Faceting</h2>
+    <p>Facets divide a plot into subplots based on the values of one or more discrete variables.</p>
+    <div class="func-grid">
+      <div class="func-card"><code class="fn">facet_grid(. ~ fl)</code><p>Facet into columns based on <code>fl</code>.</p></div>
+      <div class="func-card"><code class="fn">facet_grid(year ~ .)</code><p>Facet into rows based on <code>year</code>.</p></div>
+      <div class="func-card"><code class="fn">facet_grid(year ~ fl)</code><p>Facet into both rows and columns.</p></div>
+      <div class="func-card"><code class="fn">facet_wrap(~ fl)</code><p>Wrap facets into a rectangular layout.</p></div>
+    </div>
+    <p>Let axis limits vary across facets with <code>scales = "free"</code> (or <code>"free_x"</code> / <code>"free_y"</code>), and relabel facet strips with <code>labeller = label_both</code> or <code>label_bquote(...)</code>.</p>
+
+    <h2>Labels and legends</h2>
+    <pre><code>t + labs(
+  x = "New x axis label",
+  y = "New y axis label",
+  title = "Add a title above the plot",
+  subtitle = "Add a subtitle below title",
+  caption = "Add a caption below plot",
+  alt = "Add alt text to the plot"
+)
+
+t + annotate(geom = "text", x = 8, y = 9, label = "A")
+
+p + guides(x = guide_axis(n.dodge = 2))   # avoid crowded axis labels
+n + guides(fill = "none")                 # hide a legend
+n + theme(legend.position = "bottom")     # place a legend
+n + scale_fill_discrete(name = "Title", labels = c("A","B","C","D","E"))</code></pre>
+
+    <h2>Themes</h2>
+    <div class="chip-row">
+      <span class="chip">theme_bw()</span>
+      <span class="chip">theme_gray() (default)</span>
+      <span class="chip">theme_dark()</span>
+      <span class="chip">theme_classic()</span>
+      <span class="chip">theme_light()</span>
+      <span class="chip">theme_linedraw()</span>
+      <span class="chip">theme_minimal()</span>
+      <span class="chip">theme_void()</span>
+    </div>
+    <p>Customize any theme element — axis, legend, panel, or facet properties — with <code>theme()</code>:</p>
+    <pre><code>u + theme(plot.title = element_text(...))
+u + theme(panel.background = element_rect(fill = "blue"))</code></pre>
+
+    <h2>Zooming</h2>
+    <div class="func-grid">
+      <div class="func-card">
+        <code class="fn">coord_cartesian(xlim = c(0, 100), ylim = c(10, 20))</code>
+        <p><strong>Preferred.</strong> Zooms the view without clipping — data outside the range is still used for stats like smoothing.</p>
+      </div>
+      <div class="func-card">
+        <code class="fn">xlim(0, 100) + ylim(10, 20)</code>
+        <p>Zooms <em>with</em> clipping — removes data outside the range before any stats are computed. Same effect as setting limits on <code>scale_x_continuous()</code> / <code>scale_y_continuous()</code>.</p>
+      </div>
+    </div>
+
+    <div class="page-nav">
+      <a href="factors.html"><span class="dir">← Back</span>Factors</a>
+      <a href="index.html" style="text-align:right;"><span class="dir">Back to</span>Home →</a>
+    </div>
+  </main>
+</div>
+<script src="assets/nav.js"></script>
+</body>
+</html>

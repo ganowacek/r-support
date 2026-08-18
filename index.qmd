@@ -1,0 +1,67 @@
+---
+title: "Learn RStudio and R, one cheatsheet at a time"
+subtitle: "A friendly reference for the RStudio IDE and the tidyverse"
+toc: false
+---
+
+This site collects the essentials from Posit's official cheatsheets into a
+single, browsable reference — from finding your way around the RStudio IDE
+to importing, wrangling, and visualizing data with the tidyverse.
+
+::: {.callout-tip}
+## New to R?
+Start with [RStudio IDE](rstudio-ide.qmd) to get oriented, then move to
+[Importing Data](data-import.qmd) and [Transforming Data](data-transformation.qmd)
+to start working with your own data sets.
+:::
+
+## Topics
+
+::: {.topic-cards}
+<a class="card" href="rstudio-ide.qmd">
+  <h3>🖥️ RStudio IDE</h3>
+  <p>Panes, source editor, projects, version control, debugging, and keyboard shortcuts.</p>
+</a>
+<a class="card" href="data-import.qmd">
+  <h3>📥 Importing Data</h3>
+  <p>Read delimited files, Excel workbooks, and Google Sheets with readr, readxl, and googlesheets4.</p>
+</a>
+<a class="card" href="data-transformation.qmd">
+  <h3>🔧 Transforming Data</h3>
+  <p>Filter, arrange, mutate, summarize, group, and join data frames with dplyr.</p>
+</a>
+<a class="card" href="strings.qmd">
+  <h3>🔤 Strings</h3>
+  <p>Detect, extract, replace, and format text with stringr, plus a regular expressions primer.</p>
+</a>
+<a class="card" href="factors.qmd">
+  <h3>🏷️ Factors</h3>
+  <p>Create, reorder, recode, and combine categorical variables with forcats.</p>
+</a>
+<a class="card" href="data-visualization.qmd">
+  <h3>📊 Data Visualization</h3>
+  <p>Build plots layer by layer — geoms, stats, scales, facets, and themes — with ggplot2.</p>
+</a>
+:::
+
+## Why the tidyverse?
+
+Every reference on this site centers on the **tidyverse**, a collection of R
+packages designed to work together around a shared philosophy: data should
+be *tidy* — each variable in its own column, each observation in its own row
+— and functions should be predictable, pipeable, and human-readable.
+
+`readr` — import
+· `dplyr` — transform
+· `stringr` — text
+· `forcats` — factors
+· `ggplot2` — visualize
+· `RStudio` — workbench
+
+## A typical R workflow
+
+1. **Set up your project.** Open RStudio, create a Project (`File > New Project`), and organize your scripts, data, and outputs. See [RStudio IDE](rstudio-ide.qmd).
+2. **Import your data.** Read CSVs, Excel files, or Google Sheets into tibbles with `read_csv()`, `read_excel()`, or `read_sheet()`. See [Importing Data](data-import.qmd).
+3. **Clean and reshape it.** Filter rows, select columns, create new variables, and summarize groups with dplyr verbs. See [Transforming Data](data-transformation.qmd).
+4. **Wrangle text and categories.** Clean up messy text with stringr and tame categorical variables with forcats. See [Strings](strings.qmd) and [Factors](factors.qmd).
+5. **Visualize and share.** Build layered plots with ggplot2, then knit results into a report with R Markdown or Quarto. See [Data Visualization](data-visualization.qmd).

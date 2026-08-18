@@ -1,0 +1,191 @@
+---
+title: "String Manipulation with stringr"
+subtitle: "Detect, extract, replace, and format text, plus a regex primer"
+---
+
+The stringr package provides an internally consistent set of tools for
+working with character strings — sequences of characters surrounded by
+quotation marks.
+
+::: {.source-note}
+📄 Based on the Strings cheatsheet · stringr 1.6.0
+:::
+
+## Detect matches
+
+::: {.fn-ref}
+`str_detect(string, pattern)`
+: Detect the presence of a pattern match. Also `str_like()` / `str_ilike()` for SQL LIKE/ILIKE-style wildcard matching. `str_detect(fruit, "a")`
+
+`str_starts(string, pattern)`
+: Detect a match at the beginning of a string. Also `str_ends()`. `str_starts(fruit, "a")`
+
+`str_which(string, pattern)`
+: Find the indexes of strings that contain a match. `str_which(fruit, "a")`
+
+`str_locate(string, pattern)`
+: Locate the start/end position of a match. Also `str_locate_all()`. `str_locate(fruit, "a")`
+
+`str_count(string, pattern)`
+: Count the number of matches in each string. `str_count(fruit, "a")`
+:::
+
+## Subset strings
+
+::: {.fn-ref}
+`str_sub(string, start = 1L, end = -1L)`
+: Extract substrings by position. `str_sub(fruit, 1, 3); str_sub(fruit, -2)`
+
+`str_subset(string, pattern)`
+: Return only the strings that contain a match. `str_subset(fruit, "p")`
+
+`str_extract(string, pattern)`
+: Return the first match found in each string. Also `str_extract_all()` for every match. `str_extract(fruit, "[aeiou]")`
+
+`str_match(string, pattern)`
+: Return the first match as a matrix, with a column per `()` group in the pattern. Also `str_match_all()`. `str_match(sentences, "(a|the) ([^ ]+)")`
+:::
+
+## Manage lengths
+
+::: {.fn-ref}
+`str_length(string)`
+: The width of strings — the number of code points (usually characters).
+
+`str_pad(string, width, side)`
+: Pad strings to a constant width. `side` can be "left", "right", or "both".
+
+`str_trunc(string, width, side, ellipsis = "...")`
+: Truncate strings, replacing cut content with an ellipsis.
+
+`str_trim(string, side)`
+: Trim whitespace from the start and/or end.
+
+`str_squish(string)`
+: Trim whitespace from both ends and collapse internal runs of spaces into one.
+:::
+
+## Mutate strings
+
+::: {.fn-ref}
+`str_sub(string, s, e) <- value`
+: Replace substrings identified with `str_sub()` by assigning into it. `str_sub(fruit, 1, 3) <- "str"`
+
+`str_replace(string, pattern, replacement)`
+: Replace the first match in each string. Also `str_remove()`. `str_replace(fruit, "p", "-")`
+
+`str_replace_all(string, pattern, replacement)`
+: Replace all matches. Also `str_remove_all()`. `str_replace_all(fruit, "p", "-")`
+
+`str_to_lower()` / `str_to_upper()`
+: Convert case. `locale` defaults to `"en"`.
+
+`str_to_title()` / `str_to_sentence()`
+: Convert to title case or sentence case.
+
+`str_to_camel()` / `str_to_snake()` / `str_to_kebab()`
+: Convert strings between programming case styles. `str_to_camel("convert this string")`
+:::
+
+## Join and split
+
+::: {.fn-ref}
+`str_c(..., sep = "")`
+: Join multiple strings into a single string. Also `str_flatten()` to collapse a vector into one string with a separator. `str_c(letters, LETTERS)`
+
+`str_dup(string, times)`
+: Repeat strings a number of times. Also `str_unique()` to remove duplicates.
+
+`str_split_fixed(string, pattern, n)`
+: Split into a matrix of substrings. Also `str_split()` (list output) and `str_split_i()` (ith substring).
+
+`str_glue(..., .envir = parent.frame())`
+: Build a string from text and `{expressions}` to evaluate. Also `str_glue_data()` for a data frame/list/environment source. `str_glue("Pi is {pi}")`
+:::
+
+## Order and helper functions
+
+::: {.fn-ref}
+`str_order(x)` / `str_sort(x)`
+: Return sort indexes, or sort a character vector directly. Support `numeric = TRUE` for natural sort order.
+
+`str_view(string, pattern)`
+: View an HTML rendering of every regex match — invaluable while developing a pattern.
+
+`str_equal(x, y, ignore_case = FALSE)`
+: Determine whether two strings are equivalent.
+
+`str_wrap(string, width = 80)`
+: Wrap strings into nicely formatted paragraphs.
+
+`str_conv(string, encoding)`
+: Override the encoding of a string.
+:::
+
+## Regular expressions primer
+
+Regular expressions (*regexps*) are a concise language for describing
+patterns in strings. Pattern arguments in stringr are interpreted as regex
+*after* R has parsed any special characters in the string itself — so a
+literal backslash in a pattern must be written as `\\` in R code. Use
+`writeLines()` to see how R interprets a string after special characters
+are parsed.
+
+### Match characters
+
+| Write this | Means |
+|---|---|
+| `\.` | literal `.` |
+| `\d` | any digit (`\D` for non-digits) |
+| `\s` | any whitespace (`\S` for non-whitespace) |
+| `\w` | any word character (`\W` for non-word) |
+| `\b` | word boundary |
+| `[:digit:]`, `[:alpha:]`, `[:lower:]`, `[:upper:]` | character classes — digits, letters, lowercase, uppercase |
+| `[:alnum:]`, `[:punct:]`, `[:space:]` | alphanumerics, punctuation, whitespace |
+| `.` | any character except a newline |
+
+### Quantifiers, anchors & alternation
+
+| Pattern | Matches |
+|---|---|
+| `a?` | zero or one |
+| `a*` | zero or more |
+| `a+` | one or more |
+| `a{n}` / `a{n,}` / `a{n,m}` | exactly n / n or more / between n and m |
+| `^a` | start of string |
+| `a$` | end of string |
+| `ab\|d` | "ab" or "d" |
+| `[abe]` / `[^abe]` | one of / anything but |
+| `[a-c]` | a range |
+| `(ab\|d)e` | parentheses set precedence and create a group |
+
+### Groups and lookarounds
+
+| Pattern | Matches |
+|---|---|
+| `\1` | refers back to the first `()` group |
+| `a(?=c)` | "a" followed by "c" (not consumed) |
+| `a(?!c)` | "a" not followed by "c" |
+| `(?<=b)a` | "a" preceded by "b" |
+| `(?<!b)a` | "a" not preceded by "b" |
+
+### Pattern interpretation modifiers
+
+::: {.fn-ref}
+`regex(pattern, ignore_case = FALSE, multiline = FALSE, dotall = FALSE)`
+: Modify how a pattern is interpreted — case-insensitivity, multi-line anchors, comments, or `.` matching newlines.
+
+`fixed()`
+: Match raw bytes (fast), but may miss characters representable in multiple encodings.
+
+`coll()`
+: Match using locale-specific collation rules (slower, more correct for non-ASCII text).
+
+`boundary()`
+: Match boundaries between characters, line breaks, sentences, or words. `str_split(sentences, boundary("word"))`
+:::
+
+::: {.callout-tip}
+Not sure what a pattern actually matches? Run it through `str_view()` first
+— it highlights every match inline, which is much faster than guessing.
+:::

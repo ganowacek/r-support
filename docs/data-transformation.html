@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Transforming Data with dplyr – R &amp; RStudio Support</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./strings.html" rel="next">
+<link href="./data-import.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-61f014f841e309003241b0b5c9f6c084.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">R &amp; RStudio Support</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ganowacek/r-support"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">Transforming Data with dplyr</h1>
+        </a>     
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Learn RStudio and R, one cheatsheet at a time</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false">
+ <span class="menu-text">Getting Started</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./rstudio-ide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">RStudio IDE</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Import &amp; Tidy</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-import.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Importing Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-transformation.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Transforming Data with dplyr</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false">
+ <span class="menu-text">Working with Data</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./strings.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">String Manipulation with stringr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Factors with forcats</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Visualize</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data-visualization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Data Visualization with ggplot2</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#extract-cases-rows" id="toc-extract-cases-rows" class="nav-link active" data-scroll-target="#extract-cases-rows">Extract cases (rows)</a>
+  <ul class="collapse">
+  <li><a href="#logical-comparison-operators-for-filter" id="toc-logical-comparison-operators-for-filter" class="nav-link" data-scroll-target="#logical-comparison-operators-for-filter">Logical &amp; comparison operators for filter()</a></li>
+  <li><a href="#arrange-add-cases" id="toc-arrange-add-cases" class="nav-link" data-scroll-target="#arrange-add-cases">Arrange &amp; add cases</a></li>
+  </ul></li>
+  <li><a href="#manipulate-variables-columns" id="toc-manipulate-variables-columns" class="nav-link" data-scroll-target="#manipulate-variables-columns">Manipulate variables (columns)</a>
+  <ul class="collapse">
+  <li><a href="#selection-helpers" id="toc-selection-helpers" class="nav-link" data-scroll-target="#selection-helpers">Selection helpers</a></li>
+  <li><a href="#apply-a-function-across-multiple-columns" id="toc-apply-a-function-across-multiple-columns" class="nav-link" data-scroll-target="#apply-a-function-across-multiple-columns">Apply a function across multiple columns</a></li>
+  </ul></li>
+  <li><a href="#group-and-summarize-cases" id="toc-group-and-summarize-cases" class="nav-link" data-scroll-target="#group-and-summarize-cases">Group and summarize cases</a></li>
+  <li><a href="#vectorized-functions-for-mutate" id="toc-vectorized-functions-for-mutate" class="nav-link" data-scroll-target="#vectorized-functions-for-mutate">Vectorized functions (for mutate)</a></li>
+  <li><a href="#summary-functions-for-summarize" id="toc-summary-functions-for-summarize" class="nav-link" data-scroll-target="#summary-functions-for-summarize">Summary functions (for summarize)</a></li>
+  <li><a href="#combine-tables" id="toc-combine-tables" class="nav-link" data-scroll-target="#combine-tables">Combine tables</a>
+  <ul class="collapse">
+  <li><a href="#stack-rows-or-columns" id="toc-stack-rows-or-columns" class="nav-link" data-scroll-target="#stack-rows-or-columns">Stack rows or columns</a></li>
+  <li><a href="#mutating-joins" id="toc-mutating-joins" class="nav-link" data-scroll-target="#mutating-joins">Mutating joins</a></li>
+  <li><a href="#filtering-nest-joins" id="toc-filtering-nest-joins" class="nav-link" data-scroll-target="#filtering-nest-joins">Filtering &amp; nest joins</a></li>
+  <li><a href="#set-operations" id="toc-set-operations" class="nav-link" data-scroll-target="#set-operations">Set operations</a></li>
+  </ul></li>
+  <li><a href="#row-names" id="toc-row-names" class="nav-link" data-scroll-target="#row-names">Row names</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Transforming Data with dplyr</h1>
+<p class="subtitle lead">Filter, arrange, mutate, summarize, group, and join</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>dplyr functions work with pipes and expect <strong>tidy data</strong>: each variable in its own column, each observation (case) in its own row. <code>x |&gt; f(y)</code> becomes <code>f(x, y)</code>.</p>
+<div class="source-note">
+<p>📄 Based on the Data Transformation cheatsheet · dplyr 1.2.1</p>
+</div>
+<section id="extract-cases-rows" class="level2">
+<h2 class="anchored" data-anchor-id="extract-cases-rows">Extract cases (rows)</h2>
+<p>Row functions return a subset of rows as a new table.</p>
+<div class="fn-ref">
+<dl>
+<dt><code>filter(.data, ...)</code></dt>
+<dd>
+Extract rows that meet logical criteria. <code>mtcars |&gt; filter(mpg &gt; 20)</code>
+</dd>
+<dt><code>filter_out(.data, ...)</code></dt>
+<dd>
+Drop rows that meet logical criteria — the complement of <code>filter()</code>. Missing values in the dropped condition are kept by default. <code>mtcars |&gt; filter_out(mpg &gt; 20)</code>
+</dd>
+<dt><code>when_any()</code> / <code>when_all()</code></dt>
+<dd>
+Use inside <code>filter()</code> to combine multiple conditions. <code>mtcars |&gt; filter(when_any(mpg &gt; 30, hp &gt; 300))</code>
+</dd>
+<dt><code>distinct(.data, ...)</code></dt>
+<dd>
+Remove rows with duplicate values. <code>mtcars |&gt; distinct(gear)</code>
+</dd>
+<dt><code>slice(.data, ...)</code></dt>
+<dd>
+Select rows by position. <code>mtcars |&gt; slice(10:15)</code>
+</dd>
+<dt><code>slice_sample(.data, n, prop, replace)</code></dt>
+<dd>
+Randomly select rows, by count or fraction. <code>mtcars |&gt; slice_sample(n = 5, replace = TRUE)</code>
+</dd>
+<dt><code>slice_min()</code> / <code>slice_max()</code></dt>
+<dd>
+Select rows with the lowest/highest values of a variable. <code>mtcars |&gt; slice_min(mpg, prop = 0.25)</code>
+</dd>
+<dt><code>slice_head()</code> / <code>slice_tail()</code></dt>
+<dd>
+Select the first or last rows. <code>mtcars |&gt; slice_head(n = 5)</code>
+</dd>
+</dl>
+</div>
+<section id="logical-comparison-operators-for-filter" class="level3">
+<h3 class="anchored" data-anchor-id="logical-comparison-operators-for-filter">Logical &amp; comparison operators for filter()</h3>
+<p><code>==</code> <code>!=</code> <code>&lt;</code> <code>&gt;</code> <code>&lt;=</code> <code>&gt;=</code> <code>is.na()</code> <code>!is.na()</code> <code>%in%</code> <code>!</code> <code>|</code> <code>&amp;</code> <code>xor()</code></p>
+</section>
+<section id="arrange-add-cases" class="level3">
+<h3 class="anchored" data-anchor-id="arrange-add-cases">Arrange &amp; add cases</h3>
+<div class="fn-ref">
+<dl>
+<dt><code>arrange(.data, ...)</code></dt>
+<dd>
+Order rows by column values, low to high. Use <code>desc()</code> for high to low. <code>mtcars |&gt; arrange(desc(mpg))</code>
+</dd>
+<dt><code>add_row(.data, ...)</code></dt>
+<dd>
+Add one or more rows to a table. <code>cars |&gt; add_row(speed = 1, dist = 1)</code>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+<section id="manipulate-variables-columns" class="level2">
+<h2 class="anchored" data-anchor-id="manipulate-variables-columns">Manipulate variables (columns)</h2>
+<div class="fn-ref">
+<dl>
+<dt><code>pull(.data, var = -1)</code></dt>
+<dd>
+Extract column values as a vector, by name or index. <code>mtcars |&gt; pull(wt)</code>
+</dd>
+<dt><code>select(.data, ...)</code></dt>
+<dd>
+Extract columns as a table. <code>mtcars |&gt; select(mpg, wt)</code>
+</dd>
+<dt><code>relocate(.data, ...)</code></dt>
+<dd>
+Move columns to a new position. <code>mtcars |&gt; relocate(mpg, cyl, .after = last_col())</code>
+</dd>
+<dt><code>mutate(.data, ...)</code></dt>
+<dd>
+Compute new column(s) with vectorized functions. Also <code>add_column()</code>. <code>mtcars |&gt; mutate(gpm = 1 / mpg)</code>
+</dd>
+<dt><code>rename(.data, ...)</code></dt>
+<dd>
+Rename columns. Use <code>rename_with()</code> to rename with a function. <code>mtcars |&gt; rename(miles_per_gallon = mpg)</code>
+</dd>
+</dl>
+</div>
+<section id="selection-helpers" class="level3">
+<h3 class="anchored" data-anchor-id="selection-helpers">Selection helpers</h3>
+<p>Use with <code>select()</code> and <code>across()</code>, e.g.&nbsp;<code>mtcars |&gt; select(mpg:cyl)</code>:</p>
+<p><code>contains(match)</code> <code>starts_with(match)</code> <code>ends_with(match)</code> <code>matches(match)</code> <code>num_range(prefix, range)</code> <code>all_of(x)</code> / <code>any_of(x)</code> <code>:</code> (e.g.&nbsp;<code>mpg:cyl</code>) <code>!</code> (e.g.&nbsp;<code>!gear</code>) <code>everything()</code></p>
+</section>
+<section id="apply-a-function-across-multiple-columns" class="level3">
+<h3 class="anchored" data-anchor-id="apply-a-function-across-multiple-columns">Apply a function across multiple columns</h3>
+<div class="fn-ref">
+<dl>
+<dt><code>across(.cols, .funs, ...)</code></dt>
+<dd>
+Summarize or mutate multiple columns the same way. <code>df |&gt; summarize(across(everything(), mean))</code>
+</dd>
+<dt><code>c_across(.cols)</code></dt>
+<dd>
+Compute across columns in row-wise data. <code>df |&gt; rowwise() |&gt; mutate(x_total = sum(c_across(1:2)))</code>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+<section id="group-and-summarize-cases" class="level2">
+<h2 class="anchored" data-anchor-id="group-and-summarize-cases">Group and summarize cases</h2>
+<div class="fn-ref">
+<dl>
+<dt><code>group_by(.data, ...)</code></dt>
+<dd>
+Create a “grouped” copy of a table. Subsequent dplyr verbs operate on each group separately, then combine the results. <code>mtcars |&gt; group_by(cyl) |&gt; summarize(avg = mean(mpg))</code>
+</dd>
+<dt><code>.by = argument</code></dt>
+<dd>
+Alternate grouping syntax, scoped to a single call. <code>mtcars |&gt; summarize(avg = mean(mpg), .by = cyl)</code>
+</dd>
+<dt><code>summarize(.data, ...)</code></dt>
+<dd>
+Compute a table of summary statistics — summary functions take a vector and return one value. <code>mtcars |&gt; summarize(avg = mean(mpg))</code>
+</dd>
+<dt><code>count(.data, ..., sort = FALSE)</code></dt>
+<dd>
+Count rows in each group. Also <code>tally()</code>, <code>add_count()</code>, <code>add_tally()</code>. <code>mtcars |&gt; count(cyl)</code>
+</dd>
+<dt><code>rowwise(.data, ...)</code></dt>
+<dd>
+Group data into individual rows so dplyr computes per-row (useful with list-columns). <code>starwars |&gt; rowwise() |&gt; mutate(film_count = length(films))</code>
+</dd>
+<dt><code>ungroup(x, ...)</code></dt>
+<dd>
+Return an ungrouped copy of a table. <code>ungroup(g_mtcars)</code>
+</dd>
+</dl>
+</div>
+</section>
+<section id="vectorized-functions-for-mutate" class="level2">
+<h2 class="anchored" data-anchor-id="vectorized-functions-for-mutate">Vectorized functions (for mutate)</h2>
+<p>Vectorized functions take a vector as input and return a vector of the <em>same length</em> as output.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Functions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Offset</td>
+<td><code>lag()</code>, <code>lead()</code></td>
+</tr>
+<tr class="even">
+<td>Cumulative</td>
+<td><code>cumall()</code>, <code>cumany()</code>, <code>cummax()</code>, <code>cummean()</code>, <code>cummin()</code>, <code>cumprod()</code>, <code>cumsum()</code></td>
+</tr>
+<tr class="odd">
+<td>Ranking</td>
+<td><code>cume_dist()</code>, <code>dense_rank()</code>, <code>min_rank()</code>, <code>ntile()</code>, <code>percent_rank()</code>, <code>row_number()</code></td>
+</tr>
+<tr class="even">
+<td>Math</td>
+<td><code>+ - * / ^ %/% %%</code>, <code>log()</code>, <code>log2()</code>, <code>log10()</code>, <code>between()</code>, <code>near()</code></td>
+</tr>
+<tr class="odd">
+<td>Conditional / recode</td>
+<td><code>if_else()</code>, <code>na_if()</code>, <code>case_when()</code>, <code>replace_when()</code>, <code>coalesce()</code>, <code>recode_values()</code>, <code>replace_values()</code></td>
+</tr>
+<tr class="even">
+<td>Element-wise extremes</td>
+<td><code>pmax()</code>, <code>pmin()</code></td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>starwars <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    height <span class="sc">&gt;</span> <span class="dv">200</span> <span class="sc">|</span> mass <span class="sc">&gt;</span> <span class="dv">200</span> <span class="sc">~</span> <span class="st">"large"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    species <span class="sc">==</span> <span class="st">"Droid"</span> <span class="sc">~</span> <span class="st">"robot"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="st">"other"</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="summary-functions-for-summarize" class="level2">
+<h2 class="anchored" data-anchor-id="summary-functions-for-summarize">Summary functions (for summarize)</h2>
+<p>Summary functions take a vector as input and return a <em>single value</em>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Functions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Count</td>
+<td><code>n()</code>, <code>n_distinct()</code>, <code>sum(!is.na())</code></td>
+</tr>
+<tr class="even">
+<td>Position</td>
+<td><code>mean()</code>, <code>median()</code></td>
+</tr>
+<tr class="odd">
+<td>Logical</td>
+<td><code>mean()</code> (proportion TRUE), <code>sum()</code> (count TRUE)</td>
+</tr>
+<tr class="even">
+<td>Order</td>
+<td><code>first()</code>, <code>last()</code>, <code>nth()</code></td>
+</tr>
+<tr class="odd">
+<td>Rank</td>
+<td><code>quantile()</code>, <code>min()</code>, <code>max()</code></td>
+</tr>
+<tr class="even">
+<td>Spread</td>
+<td><code>IQR()</code>, <code>mad()</code>, <code>sd()</code>, <code>var()</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="combine-tables" class="level2">
+<h2 class="anchored" data-anchor-id="combine-tables">Combine tables</h2>
+<section id="stack-rows-or-columns" class="level3">
+<h3 class="anchored" data-anchor-id="stack-rows-or-columns">Stack rows or columns</h3>
+<div class="fn-ref">
+<dl>
+<dt><code>bind_rows(..., .id = NULL)</code></dt>
+<dd>
+Stack tables on top of each other. Set <code>.id</code> to add a column identifying the source table.
+</dd>
+<dt><code>bind_cols(...)</code></dt>
+<dd>
+Place tables side by side. Column counts must match — rows are <em>not</em> matched by key.
+</dd>
+</dl>
+</div>
+</section>
+<section id="mutating-joins" class="level3">
+<h3 class="anchored" data-anchor-id="mutating-joins">Mutating joins</h3>
+<p>Join one table to columns from another, matching rows by key.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Keeps</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>left_join(x, y, by = ...)</code></td>
+<td>All rows of <code>x</code>, matched values from <code>y</code>.</td>
+</tr>
+<tr class="even">
+<td><code>right_join(x, y, by = ...)</code></td>
+<td>All rows of <code>y</code>, matched values from <code>x</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>inner_join(x, y, by = ...)</code></td>
+<td>Only rows with matches in both tables.</td>
+</tr>
+<tr class="even">
+<td><code>full_join(x, y, by = ...)</code></td>
+<td>All rows from both tables.</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Match on a shared column name</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="st">"A"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Match on columns with different names in each table</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"C"</span> <span class="ot">=</span> <span class="st">"D"</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add suffixes to disambiguate same-named unmatched columns</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">left_join</span>(x, y, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"C"</span> <span class="ot">=</span> <span class="st">"D"</span>), <span class="at">suffix =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="filtering-nest-joins" class="level3">
+<h3 class="anchored" data-anchor-id="filtering-nest-joins">Filtering &amp; nest joins</h3>
+<div class="fn-ref">
+<dl>
+<dt><code>semi_join(x, y, by = ...)</code></dt>
+<dd>
+Return rows of <code>x</code> that have a match in <code>y</code> — useful for previewing a join.
+</dd>
+<dt><code>anti_join(x, y, by = ...)</code></dt>
+<dd>
+Return rows of <code>x</code> that have <em>no</em> match in <code>y</code>.
+</dd>
+<dt><code>nest_join(x, y, by = ...)</code></dt>
+<dd>
+Inner join <code>y</code> into <code>x</code> as a nested data-frame column.
+</dd>
+</dl>
+</div>
+</section>
+<section id="set-operations" class="level3">
+<h3 class="anchored" data-anchor-id="set-operations">Set operations</h3>
+<div class="fn-ref">
+<dl>
+<dt><code>intersect(x, y)</code></dt>
+<dd>
+Rows that appear in both <code>x</code> and <code>y</code>.
+</dd>
+<dt><code>setdiff(x, y)</code></dt>
+<dd>
+Rows that appear in <code>x</code> but not <code>y</code>.
+</dd>
+<dt><code>union(x, y)</code></dt>
+<dd>
+Rows in <code>x</code> or <code>y</code>, duplicates removed. <code>union_all()</code> keeps duplicates.
+</dd>
+</dl>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use <code>setequal(x, y)</code> to test whether two data sets contain exactly the same rows, in any order.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="row-names" class="level2">
+<h2 class="anchored" data-anchor-id="row-names">Row names</h2>
+<p>Tidy data doesn’t use row names — move them into a real column instead:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> tibble<span class="sc">::</span><span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">"car"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">|&gt;</span> tibble<span class="sc">::</span><span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">"car"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ganowacek\.github\.io\/r-support\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./data-import.html" class="pagination-link" aria-label="Importing Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Importing Data</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./strings.html" class="pagination-link" aria-label="String Manipulation with stringr">
+        <span class="nav-page-text">String Manipulation with stringr</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2026 George Nowacek. Cheatsheet content adapted from <a href="https://posit.co/resources/cheatsheets/">Posit’s official cheatsheets</a>, licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This page is built with ❤ and <a href="https://quarto.org">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

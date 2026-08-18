@@ -1,0 +1,622 @@
+[
+  {
+    "objectID": "data-visualization.html",
+    "href": "data-visualization.html",
+    "title": "Data Visualization with ggplot2",
+    "section": "",
+    "text": "ggplot2 is based on the grammar of graphics — the idea that you can build every graph from the same components: a data set, a coordinate system, and geoms, visual marks that represent data points.",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#the-template",
+    "href": "data-visualization.html#the-template",
+    "title": "Data Visualization with ggplot2",
+    "section": "The template",
+    "text": "The template\nEvery ggplot2 chart follows the same basic recipe. Only data, the geom function, and its mapping are required — everything else falls back to sensible defaults.\nggplot(data = &lt;DATA&gt;) +\n  &lt;GEOM_FUNCTION&gt;(\n    mapping = aes(&lt;MAPPINGS&gt;),\n    stat = &lt;STAT&gt;,\n    position = &lt;POSITION&gt;\n  ) +\n  &lt;COORDINATE_FUNCTION&gt; +\n  &lt;FACET_FUNCTION&gt; +\n  &lt;SCALE_FUNCTION&gt; +\n  &lt;THEME_FUNCTION&gt;\n\n\nggplot(data, aes(x, y))\n\nBegin a plot that you finish by adding layers (geoms) with +.\n\nlast_plot()\n\nReturns the last plot that was displayed.\n\nggsave(\"plot.png\", width = 5, height = 5)\n\nSaves the last plot as a 5”×5” file. File type is inferred from the extension.\n\n\n\n\nCommon aesthetic (aes) values\n\n\n\n\n\n\n\nAesthetic\nValues\n\n\n\n\ncolor / fill\na string, e.g. \"red\", \"#RRGGBB\"\n\n\nlinetype\ninteger or name: 0=“blank”, 1=“solid”, 2=“dashed”, 3=“dotted”, 4=“dotdash”, 5=“longdash”, 6=“twodash”\n\n\nsize\ninteger, in mm (point/text size)\n\n\nlinewidth\ninteger, in mm (line width)\n\n\nshape\ninteger 0–25, a shape name, or a single character, e.g. \"a\"",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#geoms",
+    "href": "data-visualization.html#geoms",
+    "title": "Data Visualization with ggplot2",
+    "section": "Geoms",
+    "text": "Geoms\nA geom function represents your data as a visual layer. Its aesthetic arguments map variables to visual properties like position, size, and color.\n\nOne variable\nContinuous: geom_area(stat = \"bin\"), geom_density(kernel = \"gaussian\"), geom_dotplot(), geom_freqpoly(), geom_histogram(binwidth = 5), geom_qq(aes(sample = x))\nDiscrete: geom_bar()\n\n\nTwo variables\nBoth continuous: geom_label(), geom_point(), geom_quantile(), geom_rug(), geom_smooth(method = lm), geom_text()\nOne discrete, one continuous: geom_col(), geom_boxplot(), geom_dotplot(), geom_violin()\nBoth discrete: geom_count(), geom_jitter()\n\n\nContinuous bivariate distribution & continuous function\ngeom_bin2d(binwidth = c(0.25,500)) geom_density_2d() geom_hex() geom_area() geom_line() geom_step(direction = \"hv\")\n\n\nVisualizing error & maps\ngeom_crossbar() geom_errorbar() / geom_errorbarh() geom_linerange() geom_pointrange() geom_sf(aes(fill = ...))\nFor maps, read spatial data with sf (e.g. sf::st_read(...)) and draw it with geom_sf().\n\n\nThree variables\ngeom_contour(aes(z = z)) geom_contour_filled(aes(fill = z)) geom_raster(aes(fill = z)) geom_tile(aes(fill = z))\n\n\nGraphical primitives & line segments\ngeom_blank() geom_curve() geom_path() geom_polygon() geom_rect() geom_ribbon() geom_abline() geom_hline() geom_vline() geom_segment() geom_spoke()",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#stats",
+    "href": "data-visualization.html#stats",
+    "title": "Data Visualization with ggplot2",
+    "section": "Stats",
+    "text": "Stats\nA stat is an alternative way to build a layer: it builds new variables to plot (e.g. count, proportion) before a geom draws them. Every geom has a default stat, and every stat has a default geom — you can override either one.\n# Equivalent ways to draw a bar chart of counts\nggplot(df, aes(x)) + geom_bar()\nggplot(df, aes(x)) + geom_bar(stat = \"count\")\nggplot(df, aes(x)) + stat_count(geom = \"bar\")\nstat_bin() stat_count() stat_density() stat_bin_2d() stat_bin_hex() stat_contour() stat_summary() stat_summary_2d() stat_ecdf() stat_quantile() stat_smooth() stat_ellipse() stat_function() stat_qq() stat_unique()",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#scales",
+    "href": "data-visualization.html#scales",
+    "title": "Data Visualization with ggplot2",
+    "section": "Scales",
+    "text": "Scales\nScales map data values to the visual values of an aesthetic. Override a default with scale_&lt;aesthetic&gt;_&lt;type&gt;(), e.g. scale_fill_manual().\nn &lt;- d + geom_bar(aes(fill = fl))\nn + scale_fill_manual(\n  values = c(\"skyblue\", \"royalblue\", \"blue\", \"navy\"),\n  limits = c(\"d\", \"e\", \"p\", \"r\"),\n  breaks = c(\"d\", \"e\", \"p\", \"r\"),\n  name = \"fuel\", labels = c(\"D\", \"E\", \"P\", \"R\")\n)\n\n\n\n\n\n\n\nPurpose\nFunctions\n\n\n\n\nGeneral purpose\nscale_*_continuous(), scale_*_discrete(), scale_*_binned(), scale_*_identity(), scale_*_manual(values = c()), scale_*_date(), scale_*_datetime()\n\n\nX & Y location\nscale_x_log10(), scale_x_reverse(), scale_x_sqrt() (and y equivalents)\n\n\nColor/fill — discrete\nscale_fill_brewer(palette = \"Blues\"), scale_fill_grey()\n\n\nColor/fill — continuous\nscale_fill_distiller(palette = \"Blues\"), scale_fill_gradient(low, high), scale_fill_gradient2(low, mid, high), scale_fill_gradientn(colors = ...)\n\n\nShape & size\nscale_shape(), scale_shape_manual(values = c()), scale_size(), scale_radius(range = c()), scale_size_area(max_size = ...)",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#coordinate-systems",
+    "href": "data-visualization.html#coordinate-systems",
+    "title": "Data Visualization with ggplot2",
+    "section": "Coordinate systems",
+    "text": "Coordinate systems\n\n\ncoord_cartesian(xlim, ylim)\n\nThe default cartesian coordinate system, with optional axis limits.\n\ncoord_fixed(ratio = 1/2)\n\nCartesian coordinates with a fixed aspect ratio between x and y units.\n\ncoord_flip()\n\nFlip cartesian coordinates by switching the x and y aesthetic mappings.\n\ncoord_polar(theta = \"x\")\n\nPolar coordinates.\n\ncoord_trans(y = \"sqrt\")\n\nTransformed cartesian coordinates.\n\ncoord_sf()\n\nEnsures all layers share a common Coordinate Reference System — use with geom_sf().",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#position-adjustments",
+    "href": "data-visualization.html#position-adjustments",
+    "title": "Data Visualization with ggplot2",
+    "section": "Position adjustments",
+    "text": "Position adjustments\nPosition adjustments determine how geoms that would otherwise overlap get arranged.\n\n\nposition = \"dodge\"\n\nArrange elements side by side.\n\nposition = \"fill\"\n\nStack elements and normalize height to 100%.\n\nposition = \"jitter\"\n\nAdd random noise to x/y position to reduce overplotting.\n\nposition = \"nudge\"\n\nNudge labels away from their points.\n\nposition = \"stack\"\n\nStack elements on top of one another.\n\n\n\nRecast a position as a function to pass extra arguments, e.g. s + geom_bar(position = position_dodge(width = 1)).",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#faceting",
+    "href": "data-visualization.html#faceting",
+    "title": "Data Visualization with ggplot2",
+    "section": "Faceting",
+    "text": "Faceting\nFacets divide a plot into subplots based on the values of one or more discrete variables.\n\n\nfacet_grid(. ~ fl)\n\nFacet into columns based on fl.\n\nfacet_grid(year ~ .)\n\nFacet into rows based on year.\n\nfacet_grid(year ~ fl)\n\nFacet into both rows and columns.\n\nfacet_wrap(~ fl)\n\nWrap facets into a rectangular layout.\n\n\n\nLet axis limits vary across facets with scales = \"free\" (or \"free_x\" / \"free_y\"), and relabel facet strips with labeller = label_both or label_bquote(...).",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#labels-and-legends",
+    "href": "data-visualization.html#labels-and-legends",
+    "title": "Data Visualization with ggplot2",
+    "section": "Labels and legends",
+    "text": "Labels and legends\nt + labs(\n  x = \"New x axis label\",\n  y = \"New y axis label\",\n  title = \"Add a title above the plot\",\n  subtitle = \"Add a subtitle below title\",\n  caption = \"Add a caption below plot\",\n  alt = \"Add alt text to the plot\"\n)\n\nt + annotate(geom = \"text\", x = 8, y = 9, label = \"A\")\n\np + guides(x = guide_axis(n.dodge = 2))   # avoid crowded axis labels\nn + guides(fill = \"none\")                 # hide a legend\nn + theme(legend.position = \"bottom\")     # place a legend\nn + scale_fill_discrete(name = \"Title\", labels = c(\"A\",\"B\",\"C\",\"D\",\"E\"))",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#themes",
+    "href": "data-visualization.html#themes",
+    "title": "Data Visualization with ggplot2",
+    "section": "Themes",
+    "text": "Themes\ntheme_bw() theme_gray() (default) theme_dark() theme_classic() theme_light() theme_linedraw() theme_minimal() theme_void()\nCustomize any theme element — axis, legend, panel, or facet properties — with theme():\nu + theme(plot.title = element_text(...))\nu + theme(panel.background = element_rect(fill = \"blue\"))",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "data-visualization.html#zooming",
+    "href": "data-visualization.html#zooming",
+    "title": "Data Visualization with ggplot2",
+    "section": "Zooming",
+    "text": "Zooming\n\n\ncoord_cartesian(xlim = c(0, 100), ylim = c(10, 20))\n\nPreferred. Zooms the view without clipping — data outside the range is still used for stats like smoothing.\n\nxlim(0, 100) + ylim(10, 20)\n\nZooms with clipping — removes data outside the range before any stats are computed. Same effect as setting limits on scale_x_continuous() / scale_y_continuous().",
+    "crumbs": [
+      "Home",
+      "Visualize",
+      "Data Visualization with ggplot2"
+    ]
+  },
+  {
+    "objectID": "strings.html",
+    "href": "strings.html",
+    "title": "String Manipulation with stringr",
+    "section": "",
+    "text": "The stringr package provides an internally consistent set of tools for working with character strings — sequences of characters surrounded by quotation marks.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#detect-matches",
+    "href": "strings.html#detect-matches",
+    "title": "String Manipulation with stringr",
+    "section": "Detect matches",
+    "text": "Detect matches\n\n\nstr_detect(string, pattern)\n\nDetect the presence of a pattern match. Also str_like() / str_ilike() for SQL LIKE/ILIKE-style wildcard matching. str_detect(fruit, \"a\")\n\nstr_starts(string, pattern)\n\nDetect a match at the beginning of a string. Also str_ends(). str_starts(fruit, \"a\")\n\nstr_which(string, pattern)\n\nFind the indexes of strings that contain a match. str_which(fruit, \"a\")\n\nstr_locate(string, pattern)\n\nLocate the start/end position of a match. Also str_locate_all(). str_locate(fruit, \"a\")\n\nstr_count(string, pattern)\n\nCount the number of matches in each string. str_count(fruit, \"a\")",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#subset-strings",
+    "href": "strings.html#subset-strings",
+    "title": "String Manipulation with stringr",
+    "section": "Subset strings",
+    "text": "Subset strings\n\n\nstr_sub(string, start = 1L, end = -1L)\n\nExtract substrings by position. str_sub(fruit, 1, 3); str_sub(fruit, -2)\n\nstr_subset(string, pattern)\n\nReturn only the strings that contain a match. str_subset(fruit, \"p\")\n\nstr_extract(string, pattern)\n\nReturn the first match found in each string. Also str_extract_all() for every match. str_extract(fruit, \"[aeiou]\")\n\nstr_match(string, pattern)\n\nReturn the first match as a matrix, with a column per () group in the pattern. Also str_match_all(). str_match(sentences, \"(a|the) ([^ ]+)\")",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#manage-lengths",
+    "href": "strings.html#manage-lengths",
+    "title": "String Manipulation with stringr",
+    "section": "Manage lengths",
+    "text": "Manage lengths\n\n\nstr_length(string)\n\nThe width of strings — the number of code points (usually characters).\n\nstr_pad(string, width, side)\n\nPad strings to a constant width. side can be “left”, “right”, or “both”.\n\nstr_trunc(string, width, side, ellipsis = \"...\")\n\nTruncate strings, replacing cut content with an ellipsis.\n\nstr_trim(string, side)\n\nTrim whitespace from the start and/or end.\n\nstr_squish(string)\n\nTrim whitespace from both ends and collapse internal runs of spaces into one.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#mutate-strings",
+    "href": "strings.html#mutate-strings",
+    "title": "String Manipulation with stringr",
+    "section": "Mutate strings",
+    "text": "Mutate strings\n\n\nstr_sub(string, s, e) &lt;- value\n\nReplace substrings identified with str_sub() by assigning into it. str_sub(fruit, 1, 3) &lt;- \"str\"\n\nstr_replace(string, pattern, replacement)\n\nReplace the first match in each string. Also str_remove(). str_replace(fruit, \"p\", \"-\")\n\nstr_replace_all(string, pattern, replacement)\n\nReplace all matches. Also str_remove_all(). str_replace_all(fruit, \"p\", \"-\")\n\nstr_to_lower() / str_to_upper()\n\nConvert case. locale defaults to \"en\".\n\nstr_to_title() / str_to_sentence()\n\nConvert to title case or sentence case.\n\nstr_to_camel() / str_to_snake() / str_to_kebab()\n\nConvert strings between programming case styles. str_to_camel(\"convert this string\")",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#join-and-split",
+    "href": "strings.html#join-and-split",
+    "title": "String Manipulation with stringr",
+    "section": "Join and split",
+    "text": "Join and split\n\n\nstr_c(..., sep = \"\")\n\nJoin multiple strings into a single string. Also str_flatten() to collapse a vector into one string with a separator. str_c(letters, LETTERS)\n\nstr_dup(string, times)\n\nRepeat strings a number of times. Also str_unique() to remove duplicates.\n\nstr_split_fixed(string, pattern, n)\n\nSplit into a matrix of substrings. Also str_split() (list output) and str_split_i() (ith substring).\n\nstr_glue(..., .envir = parent.frame())\n\nBuild a string from text and {expressions} to evaluate. Also str_glue_data() for a data frame/list/environment source. str_glue(\"Pi is {pi}\")",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#order-and-helper-functions",
+    "href": "strings.html#order-and-helper-functions",
+    "title": "String Manipulation with stringr",
+    "section": "Order and helper functions",
+    "text": "Order and helper functions\n\n\nstr_order(x) / str_sort(x)\n\nReturn sort indexes, or sort a character vector directly. Support numeric = TRUE for natural sort order.\n\nstr_view(string, pattern)\n\nView an HTML rendering of every regex match — invaluable while developing a pattern.\n\nstr_equal(x, y, ignore_case = FALSE)\n\nDetermine whether two strings are equivalent.\n\nstr_wrap(string, width = 80)\n\nWrap strings into nicely formatted paragraphs.\n\nstr_conv(string, encoding)\n\nOverride the encoding of a string.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "strings.html#regular-expressions-primer",
+    "href": "strings.html#regular-expressions-primer",
+    "title": "String Manipulation with stringr",
+    "section": "Regular expressions primer",
+    "text": "Regular expressions primer\nRegular expressions (regexps) are a concise language for describing patterns in strings. Pattern arguments in stringr are interpreted as regex after R has parsed any special characters in the string itself — so a literal backslash in a pattern must be written as \\\\ in R code. Use writeLines() to see how R interprets a string after special characters are parsed.\n\nMatch characters\n\n\n\n\n\n\n\nWrite this\nMeans\n\n\n\n\n\\.\nliteral .\n\n\n\\d\nany digit (\\D for non-digits)\n\n\n\\s\nany whitespace (\\S for non-whitespace)\n\n\n\\w\nany word character (\\W for non-word)\n\n\n\\b\nword boundary\n\n\n[:digit:], [:alpha:], [:lower:], [:upper:]\ncharacter classes — digits, letters, lowercase, uppercase\n\n\n[:alnum:], [:punct:], [:space:]\nalphanumerics, punctuation, whitespace\n\n\n.\nany character except a newline\n\n\n\n\n\nQuantifiers, anchors & alternation\n\n\n\n\n\n\n\nPattern\nMatches\n\n\n\n\na?\nzero or one\n\n\na*\nzero or more\n\n\na+\none or more\n\n\na{n} / a{n,} / a{n,m}\nexactly n / n or more / between n and m\n\n\n^a\nstart of string\n\n\na$\nend of string\n\n\nab\\|d\n“ab” or “d”\n\n\n[abe] / [^abe]\none of / anything but\n\n\n[a-c]\na range\n\n\n(ab\\|d)e\nparentheses set precedence and create a group\n\n\n\n\n\nGroups and lookarounds\n\n\n\nPattern\nMatches\n\n\n\n\n\\1\nrefers back to the first () group\n\n\na(?=c)\n“a” followed by “c” (not consumed)\n\n\na(?!c)\n“a” not followed by “c”\n\n\n(?&lt;=b)a\n“a” preceded by “b”\n\n\n(?&lt;!b)a\n“a” not preceded by “b”\n\n\n\n\n\nPattern interpretation modifiers\n\n\nregex(pattern, ignore_case = FALSE, multiline = FALSE, dotall = FALSE)\n\nModify how a pattern is interpreted — case-insensitivity, multi-line anchors, comments, or . matching newlines.\n\nfixed()\n\nMatch raw bytes (fast), but may miss characters representable in multiple encodings.\n\ncoll()\n\nMatch using locale-specific collation rules (slower, more correct for non-ASCII text).\n\nboundary()\n\nMatch boundaries between characters, line breaks, sentences, or words. str_split(sentences, boundary(\"word\"))\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nNot sure what a pattern actually matches? Run it through str_view() first — it highlights every match inline, which is much faster than guessing.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "String Manipulation with stringr"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Learn RStudio and R, one cheatsheet at a time",
+    "section": "",
+    "text": "This site collects the essentials from Posit’s official cheatsheets into a single, browsable reference — from finding your way around the RStudio IDE to importing, wrangling, and visualizing data with the tidyverse.",
+    "crumbs": [
+      "Home",
+      "Learn RStudio and R, one cheatsheet at a time"
+    ]
+  },
+  {
+    "objectID": "index.html#topics",
+    "href": "index.html#topics",
+    "title": "Learn RStudio and R, one cheatsheet at a time",
+    "section": "Topics",
+    "text": "Topics\n\n\n\n🖥️ RStudio IDE\n\n\nPanes, source editor, projects, version control, debugging, and keyboard shortcuts.\n\n \n\n📥 Importing Data\n\n\nRead delimited files, Excel workbooks, and Google Sheets with readr, readxl, and googlesheets4.\n\n \n\n🔧 Transforming Data\n\n\nFilter, arrange, mutate, summarize, group, and join data frames with dplyr.\n\n \n\n🔤 Strings\n\n\nDetect, extract, replace, and format text with stringr, plus a regular expressions primer.\n\n \n\n🏷️ Factors\n\n\nCreate, reorder, recode, and combine categorical variables with forcats.\n\n \n\n📊 Data Visualization\n\n\nBuild plots layer by layer — geoms, stats, scales, facets, and themes — with ggplot2.",
+    "crumbs": [
+      "Home",
+      "Learn RStudio and R, one cheatsheet at a time"
+    ]
+  },
+  {
+    "objectID": "index.html#why-the-tidyverse",
+    "href": "index.html#why-the-tidyverse",
+    "title": "Learn RStudio and R, one cheatsheet at a time",
+    "section": "Why the tidyverse?",
+    "text": "Why the tidyverse?\nEvery reference on this site centers on the tidyverse, a collection of R packages designed to work together around a shared philosophy: data should be tidy — each variable in its own column, each observation in its own row — and functions should be predictable, pipeable, and human-readable.\nreadr — import · dplyr — transform · stringr — text · forcats — factors · ggplot2 — visualize · RStudio — workbench",
+    "crumbs": [
+      "Home",
+      "Learn RStudio and R, one cheatsheet at a time"
+    ]
+  },
+  {
+    "objectID": "index.html#a-typical-r-workflow",
+    "href": "index.html#a-typical-r-workflow",
+    "title": "Learn RStudio and R, one cheatsheet at a time",
+    "section": "A typical R workflow",
+    "text": "A typical R workflow\n\nSet up your project. Open RStudio, create a Project (File &gt; New Project), and organize your scripts, data, and outputs. See RStudio IDE.\nImport your data. Read CSVs, Excel files, or Google Sheets into tibbles with read_csv(), read_excel(), or read_sheet(). See Importing Data.\nClean and reshape it. Filter rows, select columns, create new variables, and summarize groups with dplyr verbs. See Transforming Data.\nWrangle text and categories. Clean up messy text with stringr and tame categorical variables with forcats. See Strings and Factors.\nVisualize and share. Build layered plots with ggplot2, then knit results into a report with R Markdown or Quarto. See Data Visualization.",
+    "crumbs": [
+      "Home",
+      "Learn RStudio and R, one cheatsheet at a time"
+    ]
+  },
+  {
+    "objectID": "data-import.html",
+    "href": "data-import.html",
+    "title": "Importing Data",
+    "section": "",
+    "text": "One of the first steps in any project is getting outside data into R. The tidyverse provides readr for delimited text files, readxl for Excel workbooks, and googlesheets4 for Google Sheets.",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "data-import.html#reading-tabular-data-with-readr",
+    "href": "data-import.html#reading-tabular-data-with-readr",
+    "title": "Importing Data",
+    "section": "Reading tabular data with readr",
+    "text": "Reading tabular data with readr\nread_*(file, col_names = TRUE, col_types = NULL, col_select = NULL, id = NULL,\n       locale, n_max = Inf, skip = 0, na = c(\"\", \"NA\"),\n       guess_max = min(1000, n_max), show_col_types = TRUE)\n\n\nread_csv(\"file.csv\")\n\nRead a comma-delimited file with period decimal marks.\n\nread_csv2(\"file2.csv\")\n\nRead semicolon-delimited files with comma decimal marks (common in European locales).\n\nread_tsv(\"file.tsv\")\n\nRead a tab-delimited file. Also read_table() for whitespace-separated files.\n\nread_delim(\"file.txt\", delim = \"|\")\n\nRead files with any delimiter. If none is specified, readr guesses it automatically.\n\nread_fwf(\"file.tsv\", fwf_widths(c(2, 2, NA)))\n\nRead a fixed-width file by specifying each column’s width.\n\n\n\n\nUseful read arguments\n\n\n\n\n\n\n\nGoal\nCode\n\n\n\n\nNo header row\nread_csv(\"file.csv\", col_names = FALSE)\n\n\nProvide your own header\nread_csv(\"file.csv\", col_names = c(\"x\", \"y\", \"z\"))\n\n\nRead multiple files into one table\nread_csv(c(\"f1.csv\",\"f2.csv\",\"f3.csv\"), id = \"origin_file\")\n\n\nSkip lines\nread_csv(\"file.csv\", skip = 1)\n\n\nRead only a subset of lines\nread_csv(\"file.csv\", n_max = 1)\n\n\nTreat a value as missing\nread_csv(\"file.csv\", na = c(\"1\"))\n\n\nSpecify decimal marks\nread_delim(\"file2.csv\", locale = locale(decimal_mark = \",\"))\n\n\nHide the column-spec message\nread_*(file, show_col_types = FALSE)\n\n\nSelect columns to import\nread_*(file, col_select = c(age, earn))\n\n\nGuess column types from more rows\nread_*(file, guess_max = Inf) — by default readr looks at the first 1000 rows.",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "data-import.html#column-specification",
+    "href": "data-import.html#column-specification",
+    "title": "Importing Data",
+    "section": "Column specification",
+    "text": "Column specification\nColumn specifications define what data type each column will be imported as. By default, readr generates and prints a spec summary when a file is read; inspect it any time with spec(x).\n\n\n\nFunction\nAbbreviation\n\n\n\n\ncol_logical()\n\"l\"\n\n\ncol_integer()\n\"i\"\n\n\ncol_double()\n\"d\"\n\n\ncol_number()\n\"n\"\n\n\ncol_character()\n\"c\"\n\n\ncol_factor(levels, ordered = FALSE)\n\"f\"\n\n\ncol_datetime(format = \"\")\n\"T\"\n\n\ncol_date(format = \"\")\n\"D\"\n\n\ncol_time(format = \"\")\n\"t\"\n\n\ncol_skip()\n\"-\" / \"_\"\n\n\ncol_guess()\n\"?\"\n\n\n\n# Set a default type for all columns\nread_csv(file, col_type = list(.default = col_double()))\n\n# Mix column type functions and string abbreviations\nread_csv(file, col_type = list(x = col_double(), y = \"l\", z = \"_\"))\n\n# Or a single compact string of abbreviations\nread_csv(file, col_type = \"_?ilc\")",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "data-import.html#saving-data-with-readr",
+    "href": "data-import.html#saving-data-with-readr",
+    "title": "Importing Data",
+    "section": "Saving data with readr",
+    "text": "Saving data with readr\n\n\nwrite_csv(x, file)\n\nWrite a comma-delimited file.\n\nwrite_csv2(x, file)\n\nWrite a semicolon-delimited file.\n\nwrite_tsv(x, file)\n\nWrite a tab-delimited file.\n\nwrite_delim(x, file, delim = \" \")\n\nWrite with any delimiter you choose.",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "data-import.html#other-data-sources",
+    "href": "data-import.html#other-data-sources",
+    "title": "Importing Data",
+    "section": "Other data sources",
+    "text": "Other data sources\nhaven — SPSS / Stata / SAS · DBI — databases · jsonlite — JSON · xml2 — XML · httr — web APIs · rvest — HTML / web scraping · readr::read_lines() — raw text",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "data-import.html#importing-spreadsheets",
+    "href": "data-import.html#importing-spreadsheets",
+    "title": "Importing Data",
+    "section": "Importing spreadsheets",
+    "text": "Importing spreadsheets\n\nExcel files with readxl\n\n\nread_excel(\"excel_file.xlsx\")\n\nRead a .xls or .xlsx file based on its extension. Also read_xls() and read_xlsx() to force a format.\n\nread_excel(path, sheet = 1)\n\nChoose a sheet by position or name: read_excel(path, sheet = \"s1\").\n\nexcel_sheets(path)\n\nGet a vector of sheet names — useful before reading multiple sheets in a loop.\n\nread_excel(path, range = \"Sheet1!B1:D2\")\n\nRead a subset of cells. Also see cell_limits(), cell_rows(), cell_cols(), and anchored().\n\n\n\nTo read every sheet in a workbook into one combined data frame:\npath &lt;- \"your_file_path.xlsx\"\npath |&gt;\n  excel_sheets() |&gt;\n  set_names() |&gt;\n  map(read_excel, path = path) |&gt;\n  list_rbind()\nColumn types: set every column at once (col_types = \"text\") or individually (col_types = c(\"text\", \"guess\", \"guess\", \"numeric\")). Guess more rows with guess_max = Inf. For writing Excel files, see openxlsx or writexl; for non-tabular Excel content, see tidyxl.\n\n\nGoogle Sheets with googlesheets4\n\n\nread_sheet(ss, sheet = NULL, range = NULL)\n\nRead a sheet from a URL, a Sheet ID, or a dribble from googledrive. Same as range_read().\n\ngs4_get(ss) / sheet_properties(ss)\n\nGet spreadsheet metadata or a tibble of properties for each worksheet. Also sheet_names() and gs4_find(...).\n\nwrite_sheet(data, ss, sheet)\n\nWrite a data frame into a new or existing sheet.\n\ngs4_create(name, ..., sheets = NULL)\n\nCreate a brand-new Sheet from a vector of names, a data frame, or a named list of data frames.\n\nsheet_append(ss, data, sheet = 1)\n\nAdd rows to the end of an existing worksheet.\n\n\n\nSheets URLs follow the pattern https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit#gid=SHEET_ID. For whole-file operations (renaming, sharing, moving between folders), use the companion package googledrive.\n\n\n\n\n\n\nNote\n\n\n\nBoth readxl and googlesheets4 support the same col_types abbreviations as readr (\"l\", \"i\", \"d\", \"n\", \"c\", \"D\", \"T\", \"?\", \"_\"), plus \"L\" for list-columns when a column mixes multiple data types.",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Importing Data"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html",
+    "href": "rstudio-ide.html",
+    "title": "RStudio IDE",
+    "section": "",
+    "text": "RStudio is an integrated development environment (IDE) for R. It wraps the R console in four main panes — Source, Console, Environment/History, and Files/Plots/Packages/Help — plus tools for projects, version control, package development, and debugging.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#the-four-panes",
+    "href": "rstudio-ide.html#the-four-panes",
+    "title": "RStudio IDE",
+    "section": "The four panes",
+    "text": "The four panes\nBy default RStudio arranges its panes in a 2×2 grid. Drag pane boundaries to resize, or use the maximize/minimize icons on each pane’s toolbar.\n\n\nSource Editor\n\nWhere you write and edit scripts (.R), R Markdown/Quarto documents, Shiny apps, and more. Includes syntax highlighting, tab completion, code diagnostics, multi-cursor editing (Alt/Option + drag), and a file outline for jumping to functions or sections.\n\nConsole / Terminal / Jobs\n\nRun R code interactively in the Console, use the Terminal tab for shell commands, and run long scripts in the background with Jobs so your console stays free.\n\nEnvironment / History / Connections\n\nEnvironment lists your saved objects by type, with tools to load/save the workspace and clear it. History shows past commands you can re-run or copy. Connections manages external databases.\n\nFiles / Plots / Packages / Help / Viewer\n\nFiles is a browser keyed to your working directory. Plots shows a history of your graphics. Packages lists and manages installed packages. Help displays documentation. Viewer renders HTML content like Shiny apps and R Markdown/Quarto output.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#documents-and-apps",
+    "href": "rstudio-ide.html#documents-and-apps",
+    "title": "RStudio IDE",
+    "section": "Documents and apps",
+    "text": "Documents and apps\nRStudio recognizes file types and opens them with the right tools automatically.\n\n\n\n\n\n\n\nFile / project type\nWhat RStudio gives you\n\n\n\n\nR scripts (.R)\nRun selected code, re-run previous code, source with/without echo, or as a local job.\n\n\nR Markdown / Quarto (.Rmd, .qmd)\nKnit/render button, chunk execution controls, spell check, and a Visual Editor for WYSIWYG markdown editing.\n\n\nShiny apps (app.R, or ui.R + server.R + global.R)\nA Run App button, a chooser for where to view the app (window, viewer pane, or browser), and one-click publishing to shinyapps.io or Posit Connect.\n\n\nR packages\nA Build pane with Install & Restart, devtools::load_all(), R CMD check, and package tests, plus Roxygen-based documentation.\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nThe Visual Editor for R Markdown/Quarto behaves like a word processor: format text, insert tables, citations, and equations, and it stays in sync with the underlying markdown source.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#projects",
+    "href": "rstudio-ide.html#projects",
+    "title": "RStudio IDE",
+    "section": "Projects",
+    "text": "Projects\nCreate a project with File &gt; New Project. RStudio saves the call history, workspace, and working directory associated with a project and reloads them each time you reopen it — this keeps unrelated analyses cleanly separated. Projects can also be shared with collaborators, run in multiple simultaneous R sessions, and switched between different R versions.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#version-control-git",
+    "href": "rstudio-ide.html#version-control-git",
+    "title": "RStudio IDE",
+    "section": "Version control (Git)",
+    "text": "Version control (Git)\nTurn on Git integration at Tools &gt; Project Options &gt; Git/SVN. The Git pane shows file status at a glance and lets you stage, commit, and push/pull without leaving RStudio.\n\n\n\nStatus letter\nMeaning\n\n\n\n\nA\nAdded\n\n\nD\nDeleted\n\n\nM\nModified\n\n\nR\nRenamed\n\n\n?\nUntracked\n\n\n\nStage files, commit with a message, view file diffs, browse commit history, and push/pull to a remote — all from the Git pane toolbar. An embedded shell is also available for anything not covered by the GUI.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#package-development",
+    "href": "rstudio-ide.html#package-development",
+    "title": "RStudio IDE",
+    "section": "Package development",
+    "text": "Package development\nStart a new package with File &gt; New Project &gt; New Directory &gt; R Package, then enable Roxygen documentation at Tools &gt; Project Options &gt; Build Tools. The Build pane gives you:\n\n\ndevtools::load_all()\n\nReload the package’s changed code without a full install — the fastest development loop.\n\nInstall and Restart\n\nInstall the package and restart R with it freshly loaded.\n\nRun R CMD check\n\nRun the standard CRAN-style package checks for structural and documentation issues.\n\nRun package tests\n\nExecute your test suite (e.g. testthat) from the Build pane.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#debug-mode",
+    "href": "rstudio-ide.html#debug-mode",
+    "title": "RStudio IDE",
+    "section": "Debug mode",
+    "text": "Debug mode\nTrigger the debugger with debug(), browser(), or by clicking next to a line number to set a breakpoint, then execute your code. While paused, RStudio highlights the current line and gives you:\n\nStep controls — step through code one line at a time, or step into/out of functions.\nEnvironment inspection — examine variables in the currently executing environment.\nConsole access — run commands directly in the paused environment.\nTraceback — open the traceback to see the sequence of function calls that led to an error, and jump the debugger to its origin.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#posit-assistant",
+    "href": "rstudio-ide.html#posit-assistant",
+    "title": "RStudio IDE",
+    "section": "Posit Assistant",
+    "text": "Posit Assistant\nPosit Assistant is a built-in data analysis assistant that connects to your live R and Python sessions. It can see your data and help you explore, visualize, build, and debug — with a mode selector (Normal, Plan, Auto, Cleaning), slash commands, web search, and the ability to reference workspace files with @.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "rstudio-ide.html#essential-keyboard-shortcuts",
+    "href": "rstudio-ide.html#essential-keyboard-shortcuts",
+    "title": "RStudio IDE",
+    "section": "Essential keyboard shortcuts",
+    "text": "Essential keyboard shortcuts\n\n\n\nAction\nWindows / Linux\nMac\n\n\n\n\nSearch command history\nCtrl + ↑\nCmd + ↑\n\n\nInterrupt current command\nEsc\nEsc\n\n\nClear console\nCtrl + L\nCtrl + L\n\n\nGo to File/Function\nCtrl + .\nCtrl + .\n\n\nAttempt completion\nTab / Ctrl+Space\nTab / Ctrl+Space\n\n\nInsert &lt;-\nAlt + -\nOption + -\n\n\nInsert \\|&gt; pipe\nCtrl+Shift+M\nCmd+Shift+M\n\n\n(Un)Comment selection\nCtrl+Shift+C\nCmd+Shift+C\n\n\nKnit/Render document\nCtrl+Shift+K\nCmd+Shift+K\n\n\nLoad all (devtools)\nCtrl+Shift+L\nCmd+Shift+L\n\n\nTest package\nCtrl+Shift+T\nCmd+Shift+T\n\n\nDocument package\nCtrl+Shift+D\nCmd+Shift+D\n\n\nShow Command Palette\nCtrl+Shift+P\nCmd+Shift+P\n\n\nKeyboard Shortcuts Help\nAlt+Shift+K\nOption+Shift+K\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nCan’t remember a shortcut? Open the Command Palette (Ctrl/Cmd+Shift+P) and search by name, or view the full quick reference with Tools &gt; Keyboard Shortcuts.",
+    "crumbs": [
+      "Home",
+      "Getting Started",
+      "RStudio IDE"
+    ]
+  },
+  {
+    "objectID": "factors.html",
+    "href": "factors.html",
+    "title": "Factors with forcats",
+    "section": "",
+    "text": "R represents categorical data with factors. A factor is an integer vector with a levels attribute that maps integers to categorical values — when you view a factor, R displays the levels, not the underlying integers. The forcats package provides tools for working with them.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "factors.html#creating-and-inspecting-factors",
+    "href": "factors.html#creating-and-inspecting-factors",
+    "title": "Factors with forcats",
+    "section": "Creating and inspecting factors",
+    "text": "Creating and inspecting factors\n\n\nfactor(x, levels, labels = levels, ordered = FALSE)\n\nConvert a vector to a factor. Also as_factor(). f &lt;- factor(c(\"a\",\"c\",\"b\",\"a\"), levels = c(\"a\",\"b\",\"c\"))\n\nlevels(x)\n\nReturn or set the levels of a factor. levels(f); levels(f) &lt;- c(\"x\",\"y\",\"z\")\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nUse unclass() on a factor to see its underlying integer/levels structure.\n\n\n\nInspect factors\n\n\nfct_count(f, sort = FALSE, prop = FALSE)\n\nCount the number of values with each level.\n\nfct_match(f, lvls)\n\nCheck whether given levels are present in f.\n\nfct_unique(f)\n\nReturn the unique values, removing duplicates.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "factors.html#change-the-order-of-levels",
+    "href": "factors.html#change-the-order-of-levels",
+    "title": "Factors with forcats",
+    "section": "Change the order of levels",
+    "text": "Change the order of levels\n\n\nfct_relevel(.f, ..., after = 0L)\n\nManually reorder factor levels. fct_relevel(f, c(\"b\", \"c\", \"a\"))\n\nfct_infreq(f)\n\nReorder levels by frequency of appearance, highest first. Also fct_inseq().\n\nfct_inorder(f)\n\nReorder levels by the order in which they first appear in the data.\n\nfct_rev(f)\n\nReverse level order.\n\nfct_shift(f)\n\nShift levels left or right, wrapping around the end.\n\nfct_shuffle(f)\n\nRandomly permute the order of factor levels.\n\nfct_reorder(.f, .x, .fun = median)\n\nReorder levels by their relationship with another variable — great for ordered bar/box plots. boxplot(weight ~ fct_reorder(group, weight), data = PlantGrowth)\n\nfct_reorder2(.f, .x, .y, .fun = last2)\n\nReorder levels by their final values when plotted against two other variables — handy for coloring line plots so the legend order matches the lines.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "factors.html#change-the-value-of-levels",
+    "href": "factors.html#change-the-value-of-levels",
+    "title": "Factors with forcats",
+    "section": "Change the value of levels",
+    "text": "Change the value of levels\n\n\nfct_recode(.f, ...)\n\nManually rename levels. Also fct_relabel(), which applies a function (purrr-style) to each level. fct_recode(f, v = \"a\", x = \"b\", z = \"c\")\n\nfct_anon(f, prefix = \"\")\n\nAnonymize levels by replacing them with random integers.\n\nfct_collapse(.f, ..., other_level = NULL)\n\nCollapse levels into manually defined groups. fct_collapse(f, x = c(\"a\", \"b\"))\n\nfct_lump_min(f, min)\n\nLump together levels that appear fewer than min times into “Other”. Also fct_lump_n(), fct_lump_prop(), fct_lump_lowfreq().\n\nfct_other(f, keep, drop, other_level = \"Other\")\n\nReplace levels not in keep (or in drop) with “Other”.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "factors.html#add-or-drop-levels",
+    "href": "factors.html#add-or-drop-levels",
+    "title": "Factors with forcats",
+    "section": "Add or drop levels",
+    "text": "Add or drop levels\n\n\nfct_drop(f, only)\n\nDrop unused levels.\n\nfct_expand(f, ...)\n\nAdd new levels to a factor. fct_expand(f, \"x\")\n\nfct_na_value_to_level(f, level = \"(Missing)\")\n\nAssign an explicit level to NAs so they show up in plots and tables.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "factors.html#combine-factors",
+    "href": "factors.html#combine-factors",
+    "title": "Factors with forcats",
+    "section": "Combine factors",
+    "text": "Combine factors\n\n\nfct_c(...)\n\nCombine factors that have different levels. Also fct_cross(). fct_c(f1, f2)\n\nfct_unify(fs, levels = lvls_union(fs))\n\nStandardize levels across a list of factors so they can be safely combined or compared.\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nA quick mental model: creating and reordering levels changes how a factor displays and sorts (great for plots and tables); recoding, collapsing, and lumping change what the levels actually mean.",
+    "crumbs": [
+      "Home",
+      "Working with Data",
+      "Factors with forcats"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html",
+    "href": "data-transformation.html",
+    "title": "Transforming Data with dplyr",
+    "section": "",
+    "text": "dplyr functions work with pipes and expect tidy data: each variable in its own column, each observation (case) in its own row. x |&gt; f(y) becomes f(x, y).",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#extract-cases-rows",
+    "href": "data-transformation.html#extract-cases-rows",
+    "title": "Transforming Data with dplyr",
+    "section": "Extract cases (rows)",
+    "text": "Extract cases (rows)\nRow functions return a subset of rows as a new table.\n\n\nfilter(.data, ...)\n\nExtract rows that meet logical criteria. mtcars |&gt; filter(mpg &gt; 20)\n\nfilter_out(.data, ...)\n\nDrop rows that meet logical criteria — the complement of filter(). Missing values in the dropped condition are kept by default. mtcars |&gt; filter_out(mpg &gt; 20)\n\nwhen_any() / when_all()\n\nUse inside filter() to combine multiple conditions. mtcars |&gt; filter(when_any(mpg &gt; 30, hp &gt; 300))\n\ndistinct(.data, ...)\n\nRemove rows with duplicate values. mtcars |&gt; distinct(gear)\n\nslice(.data, ...)\n\nSelect rows by position. mtcars |&gt; slice(10:15)\n\nslice_sample(.data, n, prop, replace)\n\nRandomly select rows, by count or fraction. mtcars |&gt; slice_sample(n = 5, replace = TRUE)\n\nslice_min() / slice_max()\n\nSelect rows with the lowest/highest values of a variable. mtcars |&gt; slice_min(mpg, prop = 0.25)\n\nslice_head() / slice_tail()\n\nSelect the first or last rows. mtcars |&gt; slice_head(n = 5)\n\n\n\n\nLogical & comparison operators for filter()\n== != &lt; &gt; &lt;= &gt;= is.na() !is.na() %in% ! | & xor()\n\n\nArrange & add cases\n\n\narrange(.data, ...)\n\nOrder rows by column values, low to high. Use desc() for high to low. mtcars |&gt; arrange(desc(mpg))\n\nadd_row(.data, ...)\n\nAdd one or more rows to a table. cars |&gt; add_row(speed = 1, dist = 1)",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#manipulate-variables-columns",
+    "href": "data-transformation.html#manipulate-variables-columns",
+    "title": "Transforming Data with dplyr",
+    "section": "Manipulate variables (columns)",
+    "text": "Manipulate variables (columns)\n\n\npull(.data, var = -1)\n\nExtract column values as a vector, by name or index. mtcars |&gt; pull(wt)\n\nselect(.data, ...)\n\nExtract columns as a table. mtcars |&gt; select(mpg, wt)\n\nrelocate(.data, ...)\n\nMove columns to a new position. mtcars |&gt; relocate(mpg, cyl, .after = last_col())\n\nmutate(.data, ...)\n\nCompute new column(s) with vectorized functions. Also add_column(). mtcars |&gt; mutate(gpm = 1 / mpg)\n\nrename(.data, ...)\n\nRename columns. Use rename_with() to rename with a function. mtcars |&gt; rename(miles_per_gallon = mpg)\n\n\n\n\nSelection helpers\nUse with select() and across(), e.g. mtcars |&gt; select(mpg:cyl):\ncontains(match) starts_with(match) ends_with(match) matches(match) num_range(prefix, range) all_of(x) / any_of(x) : (e.g. mpg:cyl) ! (e.g. !gear) everything()\n\n\nApply a function across multiple columns\n\n\nacross(.cols, .funs, ...)\n\nSummarize or mutate multiple columns the same way. df |&gt; summarize(across(everything(), mean))\n\nc_across(.cols)\n\nCompute across columns in row-wise data. df |&gt; rowwise() |&gt; mutate(x_total = sum(c_across(1:2)))",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#group-and-summarize-cases",
+    "href": "data-transformation.html#group-and-summarize-cases",
+    "title": "Transforming Data with dplyr",
+    "section": "Group and summarize cases",
+    "text": "Group and summarize cases\n\n\ngroup_by(.data, ...)\n\nCreate a “grouped” copy of a table. Subsequent dplyr verbs operate on each group separately, then combine the results. mtcars |&gt; group_by(cyl) |&gt; summarize(avg = mean(mpg))\n\n.by = argument\n\nAlternate grouping syntax, scoped to a single call. mtcars |&gt; summarize(avg = mean(mpg), .by = cyl)\n\nsummarize(.data, ...)\n\nCompute a table of summary statistics — summary functions take a vector and return one value. mtcars |&gt; summarize(avg = mean(mpg))\n\ncount(.data, ..., sort = FALSE)\n\nCount rows in each group. Also tally(), add_count(), add_tally(). mtcars |&gt; count(cyl)\n\nrowwise(.data, ...)\n\nGroup data into individual rows so dplyr computes per-row (useful with list-columns). starwars |&gt; rowwise() |&gt; mutate(film_count = length(films))\n\nungroup(x, ...)\n\nReturn an ungrouped copy of a table. ungroup(g_mtcars)",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#vectorized-functions-for-mutate",
+    "href": "data-transformation.html#vectorized-functions-for-mutate",
+    "title": "Transforming Data with dplyr",
+    "section": "Vectorized functions (for mutate)",
+    "text": "Vectorized functions (for mutate)\nVectorized functions take a vector as input and return a vector of the same length as output.\n\n\n\n\n\n\n\nCategory\nFunctions\n\n\n\n\nOffset\nlag(), lead()\n\n\nCumulative\ncumall(), cumany(), cummax(), cummean(), cummin(), cumprod(), cumsum()\n\n\nRanking\ncume_dist(), dense_rank(), min_rank(), ntile(), percent_rank(), row_number()\n\n\nMath\n+ - * / ^ %/% %%, log(), log2(), log10(), between(), near()\n\n\nConditional / recode\nif_else(), na_if(), case_when(), replace_when(), coalesce(), recode_values(), replace_values()\n\n\nElement-wise extremes\npmax(), pmin()\n\n\n\nstarwars |&gt;\n  mutate(type = case_when(\n    height &gt; 200 | mass &gt; 200 ~ \"large\",\n    species == \"Droid\" ~ \"robot\",\n    .default = \"other\"\n  ))",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#summary-functions-for-summarize",
+    "href": "data-transformation.html#summary-functions-for-summarize",
+    "title": "Transforming Data with dplyr",
+    "section": "Summary functions (for summarize)",
+    "text": "Summary functions (for summarize)\nSummary functions take a vector as input and return a single value.\n\n\n\nCategory\nFunctions\n\n\n\n\nCount\nn(), n_distinct(), sum(!is.na())\n\n\nPosition\nmean(), median()\n\n\nLogical\nmean() (proportion TRUE), sum() (count TRUE)\n\n\nOrder\nfirst(), last(), nth()\n\n\nRank\nquantile(), min(), max()\n\n\nSpread\nIQR(), mad(), sd(), var()",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#combine-tables",
+    "href": "data-transformation.html#combine-tables",
+    "title": "Transforming Data with dplyr",
+    "section": "Combine tables",
+    "text": "Combine tables\n\nStack rows or columns\n\n\nbind_rows(..., .id = NULL)\n\nStack tables on top of each other. Set .id to add a column identifying the source table.\n\nbind_cols(...)\n\nPlace tables side by side. Column counts must match — rows are not matched by key.\n\n\n\n\n\nMutating joins\nJoin one table to columns from another, matching rows by key.\n\n\n\n\n\n\n\nFunction\nKeeps\n\n\n\n\nleft_join(x, y, by = ...)\nAll rows of x, matched values from y.\n\n\nright_join(x, y, by = ...)\nAll rows of y, matched values from x.\n\n\ninner_join(x, y, by = ...)\nOnly rows with matches in both tables.\n\n\nfull_join(x, y, by = ...)\nAll rows from both tables.\n\n\n\n# Match on a shared column name\nleft_join(x, y, by = \"A\")\n\n# Match on columns with different names in each table\nleft_join(x, y, by = c(\"C\" = \"D\"))\n\n# Add suffixes to disambiguate same-named unmatched columns\nleft_join(x, y, by = c(\"C\" = \"D\"), suffix = c(\"1\", \"2\"))\n\n\nFiltering & nest joins\n\n\nsemi_join(x, y, by = ...)\n\nReturn rows of x that have a match in y — useful for previewing a join.\n\nanti_join(x, y, by = ...)\n\nReturn rows of x that have no match in y.\n\nnest_join(x, y, by = ...)\n\nInner join y into x as a nested data-frame column.\n\n\n\n\n\nSet operations\n\n\nintersect(x, y)\n\nRows that appear in both x and y.\n\nsetdiff(x, y)\n\nRows that appear in x but not y.\n\nunion(x, y)\n\nRows in x or y, duplicates removed. union_all() keeps duplicates.\n\n\n\n\n\n\n\n\n\nTip\n\n\n\nUse setequal(x, y) to test whether two data sets contain exactly the same rows, in any order.",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  },
+  {
+    "objectID": "data-transformation.html#row-names",
+    "href": "data-transformation.html#row-names",
+    "title": "Transforming Data with dplyr",
+    "section": "Row names",
+    "text": "Row names\nTidy data doesn’t use row names — move them into a real column instead:\nmtcars |&gt; tibble::rownames_to_column(var = \"car\")\na |&gt; tibble::column_to_rownames(var = \"car\")",
+    "crumbs": [
+      "Home",
+      "Import & Tidy",
+      "Transforming Data with dplyr"
+    ]
+  }
+]

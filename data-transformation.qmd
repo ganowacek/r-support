@@ -1,0 +1,225 @@
+---
+title: "Transforming Data with dplyr"
+subtitle: "Filter, arrange, mutate, summarize, group, and join"
+---
+
+dplyr functions work with pipes and expect **tidy data**: each variable in
+its own column, each observation (case) in its own row. `x |> f(y)` becomes
+`f(x, y)`.
+
+::: {.source-note}
+📄 Based on the Data Transformation cheatsheet · dplyr 1.2.1
+:::
+
+## Extract cases (rows)
+
+Row functions return a subset of rows as a new table.
+
+::: {.fn-ref}
+`filter(.data, ...)`
+: Extract rows that meet logical criteria. `mtcars |> filter(mpg > 20)`
+
+`filter_out(.data, ...)`
+: Drop rows that meet logical criteria — the complement of `filter()`. Missing values in the dropped condition are kept by default. `mtcars |> filter_out(mpg > 20)`
+
+`when_any()` / `when_all()`
+: Use inside `filter()` to combine multiple conditions. `mtcars |> filter(when_any(mpg > 30, hp > 300))`
+
+`distinct(.data, ...)`
+: Remove rows with duplicate values. `mtcars |> distinct(gear)`
+
+`slice(.data, ...)`
+: Select rows by position. `mtcars |> slice(10:15)`
+
+`slice_sample(.data, n, prop, replace)`
+: Randomly select rows, by count or fraction. `mtcars |> slice_sample(n = 5, replace = TRUE)`
+
+`slice_min()` / `slice_max()`
+: Select rows with the lowest/highest values of a variable. `mtcars |> slice_min(mpg, prop = 0.25)`
+
+`slice_head()` / `slice_tail()`
+: Select the first or last rows. `mtcars |> slice_head(n = 5)`
+:::
+
+### Logical & comparison operators for filter()
+
+`==` `!=` `<` `>` `<=` `>=` `is.na()` `!is.na()` `%in%` `!` `|` `&` `xor()`
+
+### Arrange & add cases
+
+::: {.fn-ref}
+`arrange(.data, ...)`
+: Order rows by column values, low to high. Use `desc()` for high to low. `mtcars |> arrange(desc(mpg))`
+
+`add_row(.data, ...)`
+: Add one or more rows to a table. `cars |> add_row(speed = 1, dist = 1)`
+:::
+
+## Manipulate variables (columns)
+
+::: {.fn-ref}
+`pull(.data, var = -1)`
+: Extract column values as a vector, by name or index. `mtcars |> pull(wt)`
+
+`select(.data, ...)`
+: Extract columns as a table. `mtcars |> select(mpg, wt)`
+
+`relocate(.data, ...)`
+: Move columns to a new position. `mtcars |> relocate(mpg, cyl, .after = last_col())`
+
+`mutate(.data, ...)`
+: Compute new column(s) with vectorized functions. Also `add_column()`. `mtcars |> mutate(gpm = 1 / mpg)`
+
+`rename(.data, ...)`
+: Rename columns. Use `rename_with()` to rename with a function. `mtcars |> rename(miles_per_gallon = mpg)`
+:::
+
+### Selection helpers
+
+Use with `select()` and `across()`, e.g. `mtcars |> select(mpg:cyl)`:
+
+`contains(match)` `starts_with(match)` `ends_with(match)` `matches(match)`
+`num_range(prefix, range)` `all_of(x)` / `any_of(x)` `:` (e.g. `mpg:cyl`)
+`!` (e.g. `!gear`) `everything()`
+
+### Apply a function across multiple columns
+
+::: {.fn-ref}
+`across(.cols, .funs, ...)`
+: Summarize or mutate multiple columns the same way. `df |> summarize(across(everything(), mean))`
+
+`c_across(.cols)`
+: Compute across columns in row-wise data. `df |> rowwise() |> mutate(x_total = sum(c_across(1:2)))`
+:::
+
+## Group and summarize cases
+
+::: {.fn-ref}
+`group_by(.data, ...)`
+: Create a "grouped" copy of a table. Subsequent dplyr verbs operate on each group separately, then combine the results. `mtcars |> group_by(cyl) |> summarize(avg = mean(mpg))`
+
+`.by = argument`
+: Alternate grouping syntax, scoped to a single call. `mtcars |> summarize(avg = mean(mpg), .by = cyl)`
+
+`summarize(.data, ...)`
+: Compute a table of summary statistics — summary functions take a vector and return one value. `mtcars |> summarize(avg = mean(mpg))`
+
+`count(.data, ..., sort = FALSE)`
+: Count rows in each group. Also `tally()`, `add_count()`, `add_tally()`. `mtcars |> count(cyl)`
+
+`rowwise(.data, ...)`
+: Group data into individual rows so dplyr computes per-row (useful with list-columns). `starwars |> rowwise() |> mutate(film_count = length(films))`
+
+`ungroup(x, ...)`
+: Return an ungrouped copy of a table. `ungroup(g_mtcars)`
+:::
+
+## Vectorized functions (for mutate)
+
+Vectorized functions take a vector as input and return a vector of the
+*same length* as output.
+
+| Category | Functions |
+|---|---|
+| Offset | `lag()`, `lead()` |
+| Cumulative | `cumall()`, `cumany()`, `cummax()`, `cummean()`, `cummin()`, `cumprod()`, `cumsum()` |
+| Ranking | `cume_dist()`, `dense_rank()`, `min_rank()`, `ntile()`, `percent_rank()`, `row_number()` |
+| Math | `+ - * / ^ %/% %%`, `log()`, `log2()`, `log10()`, `between()`, `near()` |
+| Conditional / recode | `if_else()`, `na_if()`, `case_when()`, `replace_when()`, `coalesce()`, `recode_values()`, `replace_values()` |
+| Element-wise extremes | `pmax()`, `pmin()` |
+
+```r
+starwars |>
+  mutate(type = case_when(
+    height > 200 | mass > 200 ~ "large",
+    species == "Droid" ~ "robot",
+    .default = "other"
+  ))
+```
+
+## Summary functions (for summarize)
+
+Summary functions take a vector as input and return a *single value*.
+
+| Category | Functions |
+|---|---|
+| Count | `n()`, `n_distinct()`, `sum(!is.na())` |
+| Position | `mean()`, `median()` |
+| Logical | `mean()` (proportion TRUE), `sum()` (count TRUE) |
+| Order | `first()`, `last()`, `nth()` |
+| Rank | `quantile()`, `min()`, `max()` |
+| Spread | `IQR()`, `mad()`, `sd()`, `var()` |
+
+## Combine tables
+
+### Stack rows or columns
+
+::: {.fn-ref}
+`bind_rows(..., .id = NULL)`
+: Stack tables on top of each other. Set `.id` to add a column identifying the source table.
+
+`bind_cols(...)`
+: Place tables side by side. Column counts must match — rows are *not* matched by key.
+:::
+
+### Mutating joins
+
+Join one table to columns from another, matching rows by key.
+
+| Function | Keeps |
+|---|---|
+| `left_join(x, y, by = ...)` | All rows of `x`, matched values from `y`. |
+| `right_join(x, y, by = ...)` | All rows of `y`, matched values from `x`. |
+| `inner_join(x, y, by = ...)` | Only rows with matches in both tables. |
+| `full_join(x, y, by = ...)` | All rows from both tables. |
+
+```r
+# Match on a shared column name
+left_join(x, y, by = "A")
+
+# Match on columns with different names in each table
+left_join(x, y, by = c("C" = "D"))
+
+# Add suffixes to disambiguate same-named unmatched columns
+left_join(x, y, by = c("C" = "D"), suffix = c("1", "2"))
+```
+
+### Filtering & nest joins
+
+::: {.fn-ref}
+`semi_join(x, y, by = ...)`
+: Return rows of `x` that have a match in `y` — useful for previewing a join.
+
+`anti_join(x, y, by = ...)`
+: Return rows of `x` that have *no* match in `y`.
+
+`nest_join(x, y, by = ...)`
+: Inner join `y` into `x` as a nested data-frame column.
+:::
+
+### Set operations
+
+::: {.fn-ref}
+`intersect(x, y)`
+: Rows that appear in both `x` and `y`.
+
+`setdiff(x, y)`
+: Rows that appear in `x` but not `y`.
+
+`union(x, y)`
+: Rows in `x` or `y`, duplicates removed. `union_all()` keeps duplicates.
+:::
+
+::: {.callout-tip}
+Use `setequal(x, y)` to test whether two data sets contain exactly the same
+rows, in any order.
+:::
+
+## Row names
+
+Tidy data doesn't use row names — move them into a real column instead:
+
+```r
+mtcars |> tibble::rownames_to_column(var = "car")
+a |> tibble::column_to_rownames(var = "car")
+```

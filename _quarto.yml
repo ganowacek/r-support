@@ -1,0 +1,57 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "R & RStudio Support"
+  description: "A friendly reference site covering the RStudio IDE and core tidyverse packages, adapted from Posit's official cheatsheets."
+  site-url: "https://ganowacek.github.io/r-support/"
+  repo-url: "https://github.com/ganowacek/r-support"
+  page-navigation: true
+  bread-crumbs: false
+  navbar:
+    background: dark
+    left:
+      - href: index.qmd
+        text: Home
+    right:
+      - icon: github
+        href: https://github.com/ganowacek/r-support
+        aria-label: GitHub repository
+  sidebar:
+    style: floating
+    search: true
+    collapse-level: 1
+    contents:
+      - index.qmd
+      - section: "Getting Started"
+        contents:
+          - rstudio-ide.qmd
+      - section: "Import & Tidy"
+        contents:
+          - data-import.qmd
+          - data-transformation.qmd
+      - section: "Working with Data"
+        contents:
+          - strings.qmd
+          - factors.qmd
+      - section: "Visualize"
+        contents:
+          - data-visualization.qmd
+  page-footer:
+    left: "© 2026 George Nowacek. Cheatsheet content adapted from [Posit's official cheatsheets](https://posit.co/resources/cheatsheets/), licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)."
+    right: "This page is built with ❤ and [Quarto](https://quarto.org)."
+    background: dark
+
+format:
+  html:
+    theme:
+      - cosmo
+      - custom.scss
+    css: styles.css
+    toc: true
+    toc-title: "On this page"
+    code-copy: true
+    code-overflow: wrap
+    smooth-scroll: true
+    link-external-newwindow: true

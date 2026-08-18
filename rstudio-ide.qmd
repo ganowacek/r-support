@@ -1,0 +1,135 @@
+---
+title: "RStudio IDE"
+subtitle: "Panes, source editor, projects, version control, debugging, and keyboard shortcuts"
+---
+
+RStudio is an integrated development environment (IDE) for R. It wraps the R
+console in four main panes — Source, Console, Environment/History, and
+Files/Plots/Packages/Help — plus tools for projects, version control,
+package development, and debugging.
+
+::: {.source-note}
+📄 Based on the RStudio IDE cheatsheet, RStudio 2026.07.1
+:::
+
+## The four panes
+
+By default RStudio arranges its panes in a 2×2 grid. Drag pane boundaries to
+resize, or use the maximize/minimize icons on each pane's toolbar.
+
+::: {.fn-ref}
+`Source Editor`
+: Where you write and edit scripts (`.R`), R Markdown/Quarto documents, Shiny apps, and more. Includes syntax highlighting, tab completion, code diagnostics, multi-cursor editing (`Alt/Option + drag`), and a file outline for jumping to functions or sections.
+
+`Console / Terminal / Jobs`
+: Run R code interactively in the Console, use the Terminal tab for shell commands, and run long scripts in the background with Jobs so your console stays free.
+
+`Environment / History / Connections`
+: Environment lists your saved objects by type, with tools to load/save the workspace and clear it. History shows past commands you can re-run or copy. Connections manages external databases.
+
+`Files / Plots / Packages / Help / Viewer`
+: Files is a browser keyed to your working directory. Plots shows a history of your graphics. Packages lists and manages installed packages. Help displays documentation. Viewer renders HTML content like Shiny apps and R Markdown/Quarto output.
+:::
+
+## Documents and apps
+
+RStudio recognizes file types and opens them with the right tools automatically.
+
+| File / project type | What RStudio gives you |
+|---|---|
+| R scripts (`.R`) | Run selected code, re-run previous code, source with/without echo, or as a local job. |
+| R Markdown / Quarto (`.Rmd`, `.qmd`) | Knit/render button, chunk execution controls, spell check, and a Visual Editor for WYSIWYG markdown editing. |
+| Shiny apps (`app.R`, or `ui.R` + `server.R` + `global.R`) | A **Run App** button, a chooser for where to view the app (window, viewer pane, or browser), and one-click publishing to shinyapps.io or Posit Connect. |
+| R packages | A Build pane with Install & Restart, `devtools::load_all()`, `R CMD check`, and package tests, plus Roxygen-based documentation. |
+
+::: {.callout-tip}
+The **Visual Editor** for R Markdown/Quarto behaves like a word processor: format text, insert tables, citations, and equations, and it stays in sync with the underlying markdown source.
+:::
+
+## Projects
+
+Create a project with `File > New Project`. RStudio saves the call history,
+workspace, and working directory associated with a project and reloads them
+each time you reopen it — this keeps unrelated analyses cleanly separated.
+Projects can also be shared with collaborators, run in multiple simultaneous
+R sessions, and switched between different R versions.
+
+## Version control (Git)
+
+Turn on Git integration at `Tools > Project Options > Git/SVN`. The Git pane
+shows file status at a glance and lets you stage, commit, and push/pull
+without leaving RStudio.
+
+| Status letter | Meaning |
+|---|---|
+| **A** | Added |
+| **D** | Deleted |
+| **M** | Modified |
+| **R** | Renamed |
+| **?** | Untracked |
+
+Stage files, commit with a message, view file diffs, browse commit history,
+and push/pull to a remote — all from the Git pane toolbar. An embedded shell
+is also available for anything not covered by the GUI.
+
+## Package development
+
+Start a new package with `File > New Project > New Directory > R Package`,
+then enable Roxygen documentation at `Tools > Project Options > Build Tools`.
+The Build pane gives you:
+
+::: {.fn-ref}
+`devtools::load_all()`
+: Reload the package's changed code without a full install — the fastest development loop.
+
+`Install and Restart`
+: Install the package and restart R with it freshly loaded.
+
+`Run R CMD check`
+: Run the standard CRAN-style package checks for structural and documentation issues.
+
+`Run package tests`
+: Execute your test suite (e.g. testthat) from the Build pane.
+:::
+
+## Debug mode
+
+Trigger the debugger with `debug()`, `browser()`, or by clicking next to a
+line number to set a breakpoint, then execute your code. While paused,
+RStudio highlights the current line and gives you:
+
+- **Step controls** — step through code one line at a time, or step into/out of functions.
+- **Environment inspection** — examine variables in the currently executing environment.
+- **Console access** — run commands directly in the paused environment.
+- **Traceback** — open the traceback to see the sequence of function calls that led to an error, and jump the debugger to its origin.
+
+## Posit Assistant
+
+Posit Assistant is a built-in data analysis assistant that connects to your
+live R and Python sessions. It can see your data and help you explore,
+visualize, build, and debug — with a mode selector (Normal, Plan, Auto,
+Cleaning), slash commands, web search, and the ability to reference
+workspace files with `@`.
+
+## Essential keyboard shortcuts
+
+| Action | Windows / Linux | Mac |
+|---|---|---|
+| Search command history | `Ctrl + ↑` | `Cmd + ↑` |
+| Interrupt current command | `Esc` | `Esc` |
+| Clear console | `Ctrl + L` | `Ctrl + L` |
+| Go to File/Function | `Ctrl + .` | `Ctrl + .` |
+| Attempt completion | `Tab` / `Ctrl+Space` | `Tab` / `Ctrl+Space` |
+| Insert `<-` | `Alt + -` | `Option + -` |
+| Insert `\|>` pipe | `Ctrl+Shift+M` | `Cmd+Shift+M` |
+| (Un)Comment selection | `Ctrl+Shift+C` | `Cmd+Shift+C` |
+| Knit/Render document | `Ctrl+Shift+K` | `Cmd+Shift+K` |
+| Load all (devtools) | `Ctrl+Shift+L` | `Cmd+Shift+L` |
+| Test package | `Ctrl+Shift+T` | `Cmd+Shift+T` |
+| Document package | `Ctrl+Shift+D` | `Cmd+Shift+D` |
+| Show Command Palette | `Ctrl+Shift+P` | `Cmd+Shift+P` |
+| Keyboard Shortcuts Help | `Alt+Shift+K` | `Option+Shift+K` |
+
+::: {.callout-note}
+Can't remember a shortcut? Open the Command Palette (`Ctrl/Cmd+Shift+P`) and search by name, or view the full quick reference with `Tools > Keyboard Shortcuts`.
+:::

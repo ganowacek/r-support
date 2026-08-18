@@ -1,0 +1,173 @@
+---
+title: "Importing Data"
+subtitle: "readr, readxl, and googlesheets4"
+---
+
+One of the first steps in any project is getting outside data into R. The
+tidyverse provides **readr** for delimited text files, **readxl** for Excel
+workbooks, and **googlesheets4** for Google Sheets.
+
+::: {.source-note}
+📄 Based on the Data Import cheatsheet · readr 2.2.0 · readxl 1.5.0 · googlesheets4 1.1.2
+:::
+
+## Reading tabular data with readr
+
+```r
+read_*(file, col_names = TRUE, col_types = NULL, col_select = NULL, id = NULL,
+       locale, n_max = Inf, skip = 0, na = c("", "NA"),
+       guess_max = min(1000, n_max), show_col_types = TRUE)
+```
+
+::: {.fn-ref}
+`read_csv("file.csv")`
+: Read a comma-delimited file with period decimal marks.
+
+`read_csv2("file2.csv")`
+: Read semicolon-delimited files with comma decimal marks (common in European locales).
+
+`read_tsv("file.tsv")`
+: Read a tab-delimited file. Also `read_table()` for whitespace-separated files.
+
+`read_delim("file.txt", delim = "|")`
+: Read files with any delimiter. If none is specified, readr guesses it automatically.
+
+`read_fwf("file.tsv", fwf_widths(c(2, 2, NA)))`
+: Read a fixed-width file by specifying each column's width.
+:::
+
+### Useful read arguments
+
+| Goal | Code |
+|---|---|
+| No header row | `read_csv("file.csv", col_names = FALSE)` |
+| Provide your own header | `read_csv("file.csv", col_names = c("x", "y", "z"))` |
+| Read multiple files into one table | `read_csv(c("f1.csv","f2.csv","f3.csv"), id = "origin_file")` |
+| Skip lines | `read_csv("file.csv", skip = 1)` |
+| Read only a subset of lines | `read_csv("file.csv", n_max = 1)` |
+| Treat a value as missing | `read_csv("file.csv", na = c("1"))` |
+| Specify decimal marks | `read_delim("file2.csv", locale = locale(decimal_mark = ","))` |
+| Hide the column-spec message | `read_*(file, show_col_types = FALSE)` |
+| Select columns to import | `read_*(file, col_select = c(age, earn))` |
+| Guess column types from more rows | `read_*(file, guess_max = Inf)` — by default readr looks at the first 1000 rows. |
+
+## Column specification
+
+Column specifications define what data type each column will be imported
+as. By default, readr generates and prints a spec summary when a file is
+read; inspect it any time with `spec(x)`.
+
+| Function | Abbreviation |
+|---|---|
+| `col_logical()` | `"l"` |
+| `col_integer()` | `"i"` |
+| `col_double()` | `"d"` |
+| `col_number()` | `"n"` |
+| `col_character()` | `"c"` |
+| `col_factor(levels, ordered = FALSE)` | `"f"` |
+| `col_datetime(format = "")` | `"T"` |
+| `col_date(format = "")` | `"D"` |
+| `col_time(format = "")` | `"t"` |
+| `col_skip()` | `"-"` / `"_"` |
+| `col_guess()` | `"?"` |
+
+```r
+# Set a default type for all columns
+read_csv(file, col_type = list(.default = col_double()))
+
+# Mix column type functions and string abbreviations
+read_csv(file, col_type = list(x = col_double(), y = "l", z = "_"))
+
+# Or a single compact string of abbreviations
+read_csv(file, col_type = "_?ilc")
+```
+
+## Saving data with readr
+
+::: {.fn-ref}
+`write_csv(x, file)`
+: Write a comma-delimited file.
+
+`write_csv2(x, file)`
+: Write a semicolon-delimited file.
+
+`write_tsv(x, file)`
+: Write a tab-delimited file.
+
+`write_delim(x, file, delim = " ")`
+: Write with any delimiter you choose.
+:::
+
+## Other data sources
+
+`haven` — SPSS / Stata / SAS
+· `DBI` — databases
+· `jsonlite` — JSON
+· `xml2` — XML
+· `httr` — web APIs
+· `rvest` — HTML / web scraping
+· `readr::read_lines()` — raw text
+
+## Importing spreadsheets
+
+### Excel files with readxl
+
+::: {.fn-ref}
+`read_excel("excel_file.xlsx")`
+: Read a `.xls` or `.xlsx` file based on its extension. Also `read_xls()` and `read_xlsx()` to force a format.
+
+`read_excel(path, sheet = 1)`
+: Choose a sheet by position or name: `read_excel(path, sheet = "s1")`.
+
+`excel_sheets(path)`
+: Get a vector of sheet names — useful before reading multiple sheets in a loop.
+
+`read_excel(path, range = "Sheet1!B1:D2")`
+: Read a subset of cells. Also see `cell_limits()`, `cell_rows()`, `cell_cols()`, and `anchored()`.
+:::
+
+To read every sheet in a workbook into one combined data frame:
+
+```r
+path <- "your_file_path.xlsx"
+path |>
+  excel_sheets() |>
+  set_names() |>
+  map(read_excel, path = path) |>
+  list_rbind()
+```
+
+Column types: set every column at once (`col_types = "text"`) or
+individually (`col_types = c("text", "guess", "guess", "numeric")`). Guess
+more rows with `guess_max = Inf`. For writing Excel files, see **openxlsx**
+or **writexl**; for non-tabular Excel content, see **tidyxl**.
+
+### Google Sheets with googlesheets4
+
+::: {.fn-ref}
+`read_sheet(ss, sheet = NULL, range = NULL)`
+: Read a sheet from a URL, a Sheet ID, or a `dribble` from googledrive. Same as `range_read()`.
+
+`gs4_get(ss)` / `sheet_properties(ss)`
+: Get spreadsheet metadata or a tibble of properties for each worksheet. Also `sheet_names()` and `gs4_find(...)`.
+
+`write_sheet(data, ss, sheet)`
+: Write a data frame into a new or existing sheet.
+
+`gs4_create(name, ..., sheets = NULL)`
+: Create a brand-new Sheet from a vector of names, a data frame, or a named list of data frames.
+
+`sheet_append(ss, data, sheet = 1)`
+: Add rows to the end of an existing worksheet.
+:::
+
+Sheets URLs follow the pattern
+`https://docs.google.com/spreadsheets/d/SPREADSHEET_ID/edit#gid=SHEET_ID`.
+For whole-file operations (renaming, sharing, moving between folders), use
+the companion package **googledrive**.
+
+::: {.callout-note}
+Both readxl and googlesheets4 support the same `col_types` abbreviations as
+readr (`"l"`, `"i"`, `"d"`, `"n"`, `"c"`, `"D"`, `"T"`, `"?"`, `"_"`), plus
+`"L"` for list-columns when a column mixes multiple data types.
+:::

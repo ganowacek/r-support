@@ -1,0 +1,116 @@
+---
+title: "Factors with forcats"
+subtitle: "Create, reorder, recode, and combine categorical variables"
+---
+
+R represents categorical data with **factors**. A factor is an integer
+vector with a `levels` attribute that maps integers to categorical values —
+when you view a factor, R displays the levels, not the underlying integers.
+The forcats package provides tools for working with them.
+
+::: {.source-note}
+📄 Based on the Factors cheatsheet · forcats 1.0.1
+:::
+
+## Creating and inspecting factors
+
+::: {.fn-ref}
+`factor(x, levels, labels = levels, ordered = FALSE)`
+: Convert a vector to a factor. Also `as_factor()`. `f <- factor(c("a","c","b","a"), levels = c("a","b","c"))`
+
+`levels(x)`
+: Return or set the levels of a factor. `levels(f); levels(f) <- c("x","y","z")`
+:::
+
+::: {.callout-note}
+Use `unclass()` on a factor to see its underlying integer/levels structure.
+:::
+
+### Inspect factors
+
+::: {.fn-ref}
+`fct_count(f, sort = FALSE, prop = FALSE)`
+: Count the number of values with each level.
+
+`fct_match(f, lvls)`
+: Check whether given levels are present in `f`.
+
+`fct_unique(f)`
+: Return the unique values, removing duplicates.
+:::
+
+## Change the order of levels
+
+::: {.fn-ref}
+`fct_relevel(.f, ..., after = 0L)`
+: Manually reorder factor levels. `fct_relevel(f, c("b", "c", "a"))`
+
+`fct_infreq(f)`
+: Reorder levels by frequency of appearance, highest first. Also `fct_inseq()`.
+
+`fct_inorder(f)`
+: Reorder levels by the order in which they first appear in the data.
+
+`fct_rev(f)`
+: Reverse level order.
+
+`fct_shift(f)`
+: Shift levels left or right, wrapping around the end.
+
+`fct_shuffle(f)`
+: Randomly permute the order of factor levels.
+
+`fct_reorder(.f, .x, .fun = median)`
+: Reorder levels by their relationship with another variable — great for ordered bar/box plots. `boxplot(weight ~ fct_reorder(group, weight), data = PlantGrowth)`
+
+`fct_reorder2(.f, .x, .y, .fun = last2)`
+: Reorder levels by their final values when plotted against two other variables — handy for coloring line plots so the legend order matches the lines.
+:::
+
+## Change the value of levels
+
+::: {.fn-ref}
+`fct_recode(.f, ...)`
+: Manually rename levels. Also `fct_relabel()`, which applies a function (purrr-style) to each level. `fct_recode(f, v = "a", x = "b", z = "c")`
+
+`fct_anon(f, prefix = "")`
+: Anonymize levels by replacing them with random integers.
+
+`fct_collapse(.f, ..., other_level = NULL)`
+: Collapse levels into manually defined groups. `fct_collapse(f, x = c("a", "b"))`
+
+`fct_lump_min(f, min)`
+: Lump together levels that appear fewer than `min` times into "Other". Also `fct_lump_n()`, `fct_lump_prop()`, `fct_lump_lowfreq()`.
+
+`fct_other(f, keep, drop, other_level = "Other")`
+: Replace levels not in `keep` (or in `drop`) with "Other".
+:::
+
+## Add or drop levels
+
+::: {.fn-ref}
+`fct_drop(f, only)`
+: Drop unused levels.
+
+`fct_expand(f, ...)`
+: Add new levels to a factor. `fct_expand(f, "x")`
+
+`fct_na_value_to_level(f, level = "(Missing)")`
+: Assign an explicit level to `NA`s so they show up in plots and tables.
+:::
+
+## Combine factors
+
+::: {.fn-ref}
+`fct_c(...)`
+: Combine factors that have different levels. Also `fct_cross()`. `fct_c(f1, f2)`
+
+`fct_unify(fs, levels = lvls_union(fs))`
+: Standardize levels across a list of factors so they can be safely combined or compared.
+:::
+
+::: {.callout-tip}
+A quick mental model: creating and reordering levels changes how a factor
+*displays* and *sorts* (great for plots and tables); recoding, collapsing,
+and lumping change what the levels actually *mean*.
+:::

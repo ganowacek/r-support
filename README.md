@@ -1,7 +1,7 @@
 # R & RStudio Support Hub
 
-A static reference site covering the RStudio IDE and core tidyverse packages,
-built from Posit's official cheatsheets:
+A [Quarto](https://quarto.org) website covering the RStudio IDE and core
+tidyverse packages, built from Posit's official cheatsheets:
 
 - **RStudio IDE** — panes, source editor, projects, version control, package
   development, debugging, keyboard shortcuts
@@ -13,22 +13,28 @@ built from Posit's official cheatsheets:
 
 ## Viewing the site
 
-Once GitHub Pages is enabled for this repo, the site is available at:
+**https://ganowacek.github.io/r-support/**
 
-```
-https://<username>.github.io/<repo>/
-```
+## Project structure
+
+Source content lives in the `.qmd` files at the repo root and is configured
+by `_quarto.yml`. Rendered HTML is committed to `docs/`, which is what
+GitHub Pages serves (Settings → Pages → source: `main` branch, `/docs`).
 
 ## Running locally
 
-This is a plain static site (no build step). Serve the directory with any
-static file server, for example:
+Requires the [Quarto CLI](https://quarto.org/docs/get-started/).
 
 ```bash
-python3 -m http.server 8000
+quarto preview
 ```
 
-Then open `http://localhost:8000`.
+This live-reloads at `http://localhost:<port>` as you edit `.qmd` files. To
+produce the static output committed to `docs/`:
+
+```bash
+quarto render
+```
 
 ## Attribution
 

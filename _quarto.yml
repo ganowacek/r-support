@@ -7,10 +7,12 @@ website:
   description: "A friendly reference site covering the RStudio IDE and core tidyverse packages, adapted from Posit's official cheatsheets."
   site-url: "https://ganowacek.github.io/r-support/"
   repo-url: "https://github.com/ganowacek/r-support"
+  favicon: favicon.svg
   page-navigation: true
   bread-crumbs: false
   navbar:
     background: dark
+    logo: favicon.svg
     left:
       - href: index.qmd
         text: Home
@@ -40,7 +42,6 @@ website:
           - data-visualization.qmd
   page-footer:
     left: "© 2026 George Nowacek. Cheatsheet content adapted from [Posit's official cheatsheets](https://posit.co/resources/cheatsheets/), licensed [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)."
-    right: "This page is built with ❤ and [Quarto](https://quarto.org)."
     background: dark
 
 format:
@@ -55,3 +56,4 @@ format:
     code-overflow: wrap
     smooth-scroll: true
     link-external-newwindow: true
+    title-block-banner: true

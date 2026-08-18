@@ -51,12 +51,14 @@ packages designed to work together around a shared philosophy: data should
 be *tidy* — each variable in its own column, each observation in its own row
 — and functions should be predictable, pipeable, and human-readable.
 
-`readr` — import
-· `dplyr` — transform
-· `stringr` — text
-· `forcats` — factors
-· `ggplot2` — visualize
-· `RStudio` — workbench
+::: {.tech-row}
+<span class="chip">readr — import</span>
+<span class="chip">dplyr — transform</span>
+<span class="chip">stringr — text</span>
+<span class="chip">forcats — factors</span>
+<span class="chip">ggplot2 — visualize</span>
+<span class="chip">RStudio — workbench</span>
+:::
 
 ## A typical R workflow
 

@@ -37,6 +37,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./rstudio-ide.html" rel="next">
+<link href="./favicon.svg" rel="icon" type="image/svg+xml">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -46,7 +47,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-61f014f841e309003241b0b5c9f6c084.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-f715a684a2805f09eadd66e2b676b243.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -83,10 +84,14 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./favicon.svg" alt="" class="navbar-logo light-content">
+    <img src="./favicon.svg" alt="" class="navbar-logo dark-content">
+    </a>
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">R &amp; RStudio Support</span>
     </a>
@@ -129,7 +134,24 @@ ul.task-list li input[type="checkbox"] {
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title d-none d-lg-block">Learn RStudio and R, one cheatsheet at a time</h1>
+            <p class="subtitle lead">A friendly reference for the RStudio IDE and the tidyverse</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -232,26 +254,10 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title d-none d-lg-block">Learn RStudio and R, one cheatsheet at a time</h1>
-<p class="subtitle lead">A friendly reference for the RStudio IDE and the tidyverse</p>
-</div>
+<main class="content quarto-banner-title-block" id="quarto-document-content">
 
 
 
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
 
 
 <p>This site collects the essentials from Posit’s official cheatsheets into a single, browsable reference — from finding your way around the RStudio IDE to importing, wrangling, and visualizing data with the tidyverse.</p>
@@ -319,7 +325,9 @@ Build plots layer by layer — geoms, stats, scales, facets, and themes — with
 <section id="why-the-tidyverse" class="level2">
 <h2 class="anchored" data-anchor-id="why-the-tidyverse">Why the tidyverse?</h2>
 <p>Every reference on this site centers on the <strong>tidyverse</strong>, a collection of R packages designed to work together around a shared philosophy: data should be <em>tidy</em> — each variable in its own column, each observation in its own row — and functions should be predictable, pipeable, and human-readable.</p>
-<p><code>readr</code> — import · <code>dplyr</code> — transform · <code>stringr</code> — text · <code>forcats</code> — factors · <code>ggplot2</code> — visualize · <code>RStudio</code> — workbench</p>
+<div class="tech-row">
+<p><span class="chip">readr — import</span> <span class="chip">dplyr — transform</span> <span class="chip">stringr — text</span> <span class="chip">forcats — factors</span> <span class="chip">ggplot2 — visualize</span> <span class="chip">RStudio — workbench</span></p>
+</div>
 </section>
 <section id="a-typical-r-workflow" class="level2">
 <h2 class="anchored" data-anchor-id="a-typical-r-workflow">A typical R workflow</h2>
@@ -759,8 +767,8 @@ Build plots layer by layer — geoms, stats, scales, facets, and themes — with
       &nbsp;
     </div>
     <div class="nav-footer-right">
-<p>This page is built with ❤ and <a href="https://quarto.org">Quarto</a>.</p>
-</div>
+      &nbsp;
+    </div>
   </div>
 </footer>
 

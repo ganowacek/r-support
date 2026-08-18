@@ -24,6 +24,7 @@ $footer-bg: $blue-dark;
 $footer-fg: #cfe0eb;
 
 $code-block-bg: #1f2937;
+$code-bg: #eef1f5;
 $code-color: #c2416b;
 
 $table-border-color: #e5e9ee;
@@ -116,14 +117,24 @@ a {
 }
 
 // Code ------------------------------------------------------------------
-code {
+// Inline code keeps the light $code-bg pill (set above); just make sure it
+// stays a single continuous shape when it wraps across lines, e.g. in
+// table cells.
+code:not(.sourceCode) {
   border-radius: 5px;
-  padding: 0.14em 0.4em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 pre.sourceCode {
   border-radius: 12px;
   box-shadow: 0 4px 14px rgba(31, 41, 55, 0.12);
+}
+
+// Fenced code blocks keep their own syntax-highlight colors; just ensure
+// plain (un-highlighted) tokens stay legible against the dark background.
+pre.sourceCode code {
+  color: #e5e9f0;
 }
 
 // Callouts ----------------------------------------------------------------

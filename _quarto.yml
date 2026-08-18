@@ -57,3 +57,4 @@ format:
     smooth-scroll: true
     link-external-newwindow: true
     title-block-banner: true
+    highlight-style: dracula

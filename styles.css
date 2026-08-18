@@ -22,6 +22,15 @@
   box-shadow: 0 1px 3px rgba(31, 41, 55, 0.04);
 }
 
+/* The term is itself a `code` span (from markdown backticks) — the card
+   already looks like a chip, so strip the generic inline-code pill here. */
+.fn-ref dt code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  color: inherit;
+}
+
 .fn-ref dd {
   grid-column: 1;
   margin: 0 0 0 0;
